@@ -694,7 +694,7 @@ let running = true, particles = {}, sparks = [], ripples = [];
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // ---------- design settings ----------
-const DEFAULTS = {texts:{torah:true, bible:true, quran:true, mormon:true, scientology:true, ea:true, hinduism:true, buddhism:true}, posts:'rain', feed:'live', liveText:true, ideaShape:'diamond', ideaColor:'blend', ideaHex:'#e9dcb6', ideas:true, textNames:true, dials:true, inkSize:1, cal:true, calPull:1, shape:'planets', labels:'en', size:1, palette:'pigment', colors:null, chatter:null, bg:'theme', ink:'dots', trail:.7, density:1, roles:true};
+const DEFAULTS = {texts:{torah:true, bible:true, quran:true, mormon:true, scientology:true, ea:true, hinduism:true, buddhism:true}, posts:'rain', feed:'live', liveText:true, ideaShape:'star', ideaColor:'outline', ideaHex:'#e9dcb6', ideas:false, textNames:false, dials:true, inkSize:0.8, cal:true, calPull:0.5, shape:'stars', labels:'none', size:1.4, palette:'ember', colors:null, chatter:null, bg:'night', ink:'streaks', trail:1, density:1, roles:true};
 const PALETTES = {
   pigment:{label:'Pigment', c:null},
   jewel:{label:'Jewel', c:{torah:'#4a6cf7', bible:'#d81b60', quran:'#f0a202', mormon:'#0fa3a3', scientology:'#7b3fe4', ea:'#2fa84f', hinduism:'#e0457b', buddhism:'#ff7f11'}},
