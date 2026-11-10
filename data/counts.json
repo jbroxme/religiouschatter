@@ -1,0 +1,149 @@
+{
+ "unit": "verses that name the figure",
+ "totals": {
+  "torah": 5852,
+  "bible": 25250,
+  "quran": 6236,
+  "mormon": 6604
+ },
+ "counts": {
+  "aaron": {
+   "torah": 286,
+   "bible": 45,
+   "quran": 20,
+   "mormon": 0
+  },
+  "abraham": {
+   "torah": 183,
+   "bible": 94,
+   "quran": 63,
+   "mormon": 27
+  },
+  "adam": {
+   "torah": 17,
+   "bible": 9,
+   "quran": 25,
+   "mormon": 25
+  },
+  "cain": {
+   "torah": 13,
+   "bible": 3,
+   "quran": 0,
+   "mormon": 2
+  },
+  "david": {
+   "torah": 0,
+   "bible": 896,
+   "quran": 16,
+   "mormon": 7
+  },
+  "elijah": {
+   "torah": 0,
+   "bible": 92,
+   "quran": 3,
+   "mormon": 1
+  },
+  "eve": {
+   "torah": 2,
+   "bible": 2,
+   "quran": 0,
+   "mormon": 3
+  },
+  "gabriel": {
+   "torah": 0,
+   "bible": 4,
+   "quran": 3,
+   "mormon": 0
+  },
+  "isaac": {
+   "torah": 92,
+   "bible": 31,
+   "quran": 16,
+   "mormon": 13
+  },
+  "ishmael": {
+   "torah": 15,
+   "bible": 3,
+   "quran": 12,
+   "mormon": 0
+  },
+  "jacob": {
+   "torah": 191,
+   "bible": 154,
+   "quran": 16,
+   "mormon": 40
+  },
+  "jesus": {
+   "torah": 0,
+   "bible": 1828,
+   "quran": 31,
+   "mormon": 407
+  },
+  "job": {
+   "torah": 0,
+   "bible": 53,
+   "quran": 4,
+   "mormon": 0
+  },
+  "john": {
+   "torah": 0,
+   "bible": 89,
+   "quran": 5,
+   "mormon": 0
+  },
+  "jonah": {
+   "torah": 0,
+   "bible": 24,
+   "quran": 6,
+   "mormon": 0
+  },
+  "joseph": {
+   "torah": 156,
+   "bible": 43,
+   "quran": 26,
+   "mormon": 21
+  },
+  "lot": {
+   "torah": 29,
+   "bible": 5,
+   "quran": 27,
+   "mormon": 0
+  },
+  "mary": {
+   "torah": 0,
+   "bible": 21,
+   "quran": 31,
+   "mormon": 2
+  },
+  "moses": {
+   "torah": 586,
+   "bible": 188,
+   "quran": 131,
+   "mormon": 63
+  },
+  "noah": {
+   "torah": 35,
+   "bible": 12,
+   "quran": 43,
+   "mormon": 3
+  },
+  "pharaoh": {
+   "torah": 185,
+   "bible": 47,
+   "quran": 67,
+   "mormon": 2
+  },
+  "satan": {
+   "torah": 0,
+   "bible": 92,
+   "quran": 74,
+   "mormon": 109
+  },
+  "solomon": {
+   "torah": 0,
+   "bible": 273,
+   "quran": 16,
+   "mormon": 5
+  }
+ }
+}

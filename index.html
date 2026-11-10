@@ -1,0 +1,1700 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Figures and ideas shared across the Torah, the Bible, the Quran, the Book of Mormon, Hinduism, Buddhism, Scientology and Effective Altruism, moving with their calendars under live posts from Bluesky.">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+img{max-width:100%}[hidden]{display:none!important}
+</style>
+<title>Ink and Chatter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Serif+Hebrew:wght@400;500&family=Amiri:wght@400&display=swap">
+<style>
+/* Layout: one full-bleed field (three corpora as anchors of a triangle), with a reading panel at the side that stacks below on phones. */
+:root{
+  --bg:#e8eaee; --panel:#f5f6f8; --fg:#1a1d26; --muted:#585e6d; --line:#cdd1d9;
+  --torah:#2c5bc2; --bible:#c0392f; --quran:#b98208; --spark:#1a1d26;
+  --mormon:#17877e; --scientology:#7a4bc9; --ea:#5c8a17; --hinduism:#c2337a; --buddhism:#c9680c;
+  --display:"Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+  --sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --hebrew:"Noto Serif Hebrew", "Times New Roman", serif;
+  --arabic:"Amiri", "Geeza Pro", "Times New Roman", serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0b0d13; --panel:#12151d; --fg:#e4e7ee; --muted:#8b92a3; --line:#252a37;
+  --torah:#5b8dff; --bible:#ff5b4f; --quran:#f2b431; --spark:#e4e7ee; --mormon:#3cc7b8; --scientology:#a985ff; --ea:#a6d64a; --hinduism:#ff6fb0; --buddhism:#ff9a3c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0b0d13; --panel:#12151d; --fg:#e4e7ee; --muted:#8b92a3; --line:#252a37;
+  --torah:#5b8dff; --bible:#ff5b4f; --quran:#f2b431; --spark:#e4e7ee; --mormon:#3cc7b8; --scientology:#a985ff; --ea:#a6d64a; --hinduism:#ff6fb0; --buddhism:#ff9a3c; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:14px;line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 32px}
+.wrap{max-width:1400px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(32px,4.4vw,48px);line-height:1;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1 em{font-weight:500}
+.lede{margin:6px 0 0;color:var(--muted);max-width:62ch}
+.controls{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.controls label{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;cursor:pointer}
+button{font:inherit;font-size:13px;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--muted)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--torah);outline-offset:2px}
+input[type=range]{width:90px;accent-color:var(--fg)}
+input[type=checkbox]{accent-color:var(--fg)}
+
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start}
+.field{position:relative;height:clamp(440px,74vh,800px);border-radius:10px;overflow:hidden;background:var(--bg);border:1px solid var(--line);touch-action:manipulation}
+.field canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#ui{cursor:default}
+.event{position:absolute;left:12px;top:12px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:4px 8px;color:var(--fg);max-width:calc(100% - 24px)}
+.fieldcol{display:flex;flex-direction:column;gap:8px;min-width:0}
+.legend{font-size:11.5px;color:var(--muted);font-family:var(--mono);display:flex;flex-wrap:wrap;gap:4px 14px;pointer-events:none}
+.legend span{min-width:0}
+
+aside.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;min-width:0}
+.sec{padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.sec + .sec{border-top:1px solid var(--line)}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;gap:8px;align-items:center}
+select{font:inherit;font-size:13px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:4px 6px;max-width:60%}
+h2{font-family:var(--display);font-weight:600;font-size:32px;line-height:1;margin:0}
+.names{display:flex;flex-wrap:wrap;gap:4px 16px;color:var(--muted);font-size:13px}
+.names b{font-weight:400;color:var(--fg)}
+.he{font-family:var(--hebrew);font-size:17px}
+.ar{font-family:var(--arabic);font-size:19px;line-height:1.2}
+.rows{display:flex;flex-direction:column;gap:10px}
+.row{display:grid;grid-template-columns:88px minmax(0,1fr);gap:4px 10px;align-items:baseline}
+.row .k{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;align-self:center}
+.bar i{display:block;height:100%}
+.row .meta{grid-column:2;font-size:12px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.row .note{grid-column:2;font-size:13px;line-height:1.45}
+.pill{font-family:var(--mono);font-size:10.5px;border:1px solid var(--line);border-radius:999px;padding:0 7px;color:var(--fg)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:flex;flex-direction:column;align-items:flex-start;gap:0;padding:6px 10px;border-radius:6px;text-align:left}
+.chip .t{font-size:12.5px;font-weight:500}
+.chip .w{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:baseline}
+.chip .n{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+.chip[aria-pressed="true"]{border-color:var(--fg);background:var(--bg)}
+.chip.pulse{animation:pulse .6s ease-out}
+@keyframes pulse{from{box-shadow:0 0 0 0 var(--muted)}to{box-shadow:0 0 0 6px transparent}}
+.termnote{font-size:12.5px;color:var(--muted);margin:0}
+.stat{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+ul.feed{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;min-height:240px}
+ul.feed li{font-size:12.5px;line-height:1.4;display:grid;grid-template-columns:96px minmax(0,1fr);gap:8px}
+ul.feed li.leader .body{font-weight:500}
+ul.feed .tone{font-family:var(--mono);font-size:10.5px;color:var(--muted);padding-top:1px}
+ul.feed .to{color:var(--muted);font-family:var(--mono);font-size:10.5px;display:block}
+footer.notes{color:var(--muted);font-size:12.5px;max-width:90ch;display:flex;flex-direction:column;gap:6px}
+footer.notes p{margin:0}
+
+.tabs{display:flex;gap:4px;padding:10px 12px 0;border-bottom:1px solid var(--line)}
+.tab{border:1px solid transparent;border-radius:6px 6px 0 0;background:transparent;color:var(--muted);padding:7px 12px;margin-bottom:-1px}
+.tab:hover{border-color:transparent;color:var(--fg)}
+.tab[aria-selected="true"]{background:var(--panel);border-color:var(--line);border-bottom-color:var(--panel);color:var(--fg);font-weight:500}
+.opt{display:flex;flex-direction:column;gap:6px}
+.opt > .lbl{font-size:12.5px;font-weight:500;display:flex;justify-content:space-between;gap:8px}
+.opt > .lbl output{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:400}
+.seg{display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:4px}
+.seg button{padding:6px 8px;font-size:12.5px}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.swatches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.sw{display:flex;flex-direction:column;gap:6px;padding:8px;align-items:stretch;text-align:left}
+.sw .dots{display:flex;gap:3px}
+.sw .dots i{flex:1;height:14px;border-radius:3px}
+.sw span{font-size:11.5px}
+.sw[aria-pressed="true"]{border-color:var(--fg);box-shadow:inset 0 0 0 1px var(--fg)}
+.picks{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:6px}
+.texts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 12px}
+.texts label{display:flex;gap:8px;align-items:center;font-size:12.5px;cursor:pointer}
+.picks label{display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:var(--muted)}
+input[type=color]{width:100%;height:30px;border:1px solid var(--line);border-radius:6px;background:var(--bg);padding:2px;cursor:pointer}
+.opt input[type=range]{width:100%}
+.check{display:flex;gap:8px;align-items:center;font-size:12.5px;cursor:pointer}
+.boardActions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.boardActions .stat{flex:1 1 100%}
+#settingsOut{width:100%;font-family:var(--mono);font-size:11px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:8px;resize:vertical}
+.cal{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:12px 14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.calTop{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;align-items:flex-start}
+.gdate{font-family:var(--display);font-size:24px;font-weight:600;line-height:1.1}
+.cdates{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12.5px;color:var(--muted);margin-top:4px;font-variant-numeric:tabular-nums}
+.cdates span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.calCtl{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.calCtl .seg{grid-template-columns:repeat(3,auto)}
+#calScrub{width:100%;accent-color:var(--fg)}
+.scrubEnds{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:-6px}
+.calCols{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:14px}
+.calCols h3{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:400;margin:0 0 6px}
+ul.calNow,ul.calNext{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+ul.calNow li{font-size:12.5px;line-height:1.4;display:grid;grid-template-columns:10px minmax(0,1fr);gap:8px}
+ul.calNow li .dot{margin-top:5px}
+ul.calNow small{display:block;color:var(--muted);font-size:12px}
+ul.calNext button{width:100%;text-align:left;display:flex;gap:8px;align-items:center;padding:4px 8px;font-size:12px}
+ul.calNext .when{font-family:var(--mono);font-size:11px;color:var(--muted);min-width:48px}
+@media (max-width:640px){.calCols{grid-template-columns:minmax(0,1fr)}}
+ul.feed a{color:var(--muted);font-family:var(--mono);font-size:10.5px;display:inline-block;margin-top:2px}
+.controls select{font:inherit;font-size:13px;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 6px}
+#optIdeaHex{margin-top:4px}
+@media (max-width:980px){.stage{grid-template-columns:minmax(0,1fr)}.field{height:min(78vh,600px)}}
+@media (prefers-reduced-motion: reduce){.chip.pulse{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Ink <em>and</em> Chatter</h1>
+      <p class="lede">Twenty-three figures shared by the Torah, the Bible and the Quran, and by the Book of Mormon, plus five ideas that also reach Hinduism, Buddhism, Scientology and Effective Altruism. Each text pours its own colored ink toward the people it names. Where the inks meet, the stories overlap. Posts that mention them fall like rain. Each text also turns through its own calendar, pulling figures closer when their stories are read or remembered.</p>
+    </div>
+    <div class="controls">
+      <label><input type="checkbox" id="layerInk" checked> Scripture ink</label>
+      <label><input type="checkbox" id="layerChat" checked> Chatter</label>
+      <label><input type="checkbox" id="layerLeaders" checked> Leaders</label>
+      <label>Posts from <select id="feedSrc"><option value="live">Bluesky (live)</option><option value="sim">Simulation</option></select></label>
+      <label>Posts/sec <input type="range" id="rate" min="0" max="4" step="0.2" value="1.4"></label>
+      <button id="designBtn" type="button">Design board</button>
+      <button id="eventBtn" type="button">Simulate an event</button>
+      <button id="playBtn" type="button">Pause</button>
+    </div>
+  </header>
+
+  <main class="stage">
+    <div class="fieldcol">
+    <div class="field" id="field">
+      <canvas id="art"></canvas>
+      <canvas id="ui" aria-label="Field of characters positioned between the Torah, the Bible and the Quran. Use the character menu in the panel to choose one."></canvas>
+      <div class="event" id="eventBadge" hidden></div>
+    </div>
+      <div class="cal" id="calStrip">
+        <div class="calTop">
+          <div>
+            <div class="gdate" id="gDate"></div>
+            <div class="cdates" id="cDates"></div>
+          </div>
+          <div class="calCtl">
+            <button type="button" id="calPlay">Pause year</button>
+            <div class="seg" role="group" aria-label="Calendar speed"><button type="button" data-cal="1">1 day/s</button><button type="button" data-cal="7">1 week/s</button><button type="button" data-cal="30">1 month/s</button></div>
+            <button type="button" id="calToday">Today</button>
+          </div>
+        </div>
+        <input type="range" id="calScrub" aria-label="Date">
+        <div class="scrubEnds"><span>Oct 2025</span><span>Sep 2028</span></div>
+        <div class="calCols">
+          <div><h3>Observed now</h3><ul class="calNow" id="calNow"></ul></div>
+          <div><h3>Coming up</h3><ul class="calNext" id="calNext"></ul></div>
+        </div>
+      </div>
+      <div class="legend">
+        <span>position = how much each text names them</span>
+        <span>steady orbit = exemplar</span>
+        <span>breathing = tested</span>
+        <span>jagged = transgressor or adversary</span>
+        <span>dashed = story told without the name, or a parallel figure</span>
+        <span>diamonds = shared ideas</span>
+        <span>posts fall like rain; big colored drops = religious leaders (simulated roles)</span>
+        <span>dials = each calendar's year; beams = figures that calendar is remembering</span>
+      </div>
+    </div>
+
+    <aside class="panel" id="aside">
+      <div class="tabs" role="tablist">
+        <button class="tab" type="button" role="tab" id="tabInfo" aria-selected="false" aria-controls="paneInfo">Explore</button>
+        <button class="tab" type="button" role="tab" id="tabDesign" aria-selected="true" aria-controls="paneDesign">Design board</button>
+      </div>
+      <div id="paneInfo" role="tabpanel" aria-labelledby="tabInfo" hidden>
+      <section class="sec" id="detail">
+        <div class="eyebrow"><span>Character</span><select id="charSel" aria-label="Choose a character"></select></div>
+        <h2 id="dName">Moses</h2>
+        <div class="names" id="dNames"></div>
+        <div class="rows" id="dRows"></div>
+        <div class="stat" id="dStat"></div>
+      </section>
+      <section class="sec">
+        <div class="eyebrow"><span>Shared language</span><span>Hebrew · Arabic root</span></div>
+        <div class="chips" id="terms"></div>
+        <p class="termnote" id="termNote">Pick a word to link the figures whose stories use it. Many key words share a Semitic root in Hebrew and Arabic.</p>
+      </section>
+      <section class="sec">
+        <div class="eyebrow"><span>Chatter feed</span><span id="feedMode">simulated</span></div>
+        <div class="stat" id="liveStats" hidden></div>
+        <ul class="feed" id="feed"></ul>
+      </section>
+      </div>
+      <div id="paneDesign" role="tabpanel" aria-labelledby="tabDesign">
+        <section class="sec">
+          <div class="eyebrow"><span>Texts on the canvas</span></div>
+          <div class="texts" id="textToggles"></div>
+          <label class="check"><input type="checkbox" id="optIdeas"> Shared ideas</label>
+          <label class="check"><input type="checkbox" id="optLiveText"> Show the text of live posts</label>
+        </section>
+        <section class="sec">
+          <div class="eyebrow"><span>Figures</span></div>
+          <div class="opt"><div class="lbl">Shape</div>
+            <div class="seg" data-key="shape"><button type="button" data-v="planets">Planets</button><button type="button" data-v="rings">Rings</button><button type="button" data-v="stars">Stars</button><button type="button" data-v="names">Names only</button></div></div>
+          <div class="opt"><div class="lbl">Labels</div>
+            <div class="seg" data-key="labels"><button type="button" data-v="en">English</button><button type="button" data-v="he">Hebrew</button><button type="button" data-v="ar">Arabic</button><button type="button" data-v="all">All three</button><button type="button" data-v="none">None</button></div></div>
+          <label class="check"><input type="checkbox" id="optTextNames"> Show names of the texts</label>
+          <label class="check"><input type="checkbox" id="optDials"> Show calendar dials</label>
+          <div class="opt"><label class="lbl" for="optSize">Size <output id="optSizeOut"></output></label><input type="range" id="optSize" min="0.6" max="1.8" step="0.05"></div>
+          <div class="opt"><div class="lbl">Idea shape</div>
+            <div class="seg" data-key="ideaShape"><button type="button" data-v="diamond">Diamond</button><button type="button" data-v="hexagon">Hexagon</button><button type="button" data-v="triangle">Triangle</button><button type="button" data-v="square">Square</button><button type="button" data-v="circle">Circle</button><button type="button" data-v="star">Star</button></div></div>
+          <div class="opt"><div class="lbl">Idea color</div>
+            <div class="seg" data-key="ideaColor"><button type="button" data-v="blend">Blend of texts</button><button type="button" data-v="single">One color</button><button type="button" data-v="outline">Outline</button></div>
+            <input type="color" id="optIdeaHex" aria-label="Color for ideas"></div>
+        </section>
+        <section class="sec">
+          <div class="eyebrow"><span>Color</span></div>
+          <div class="opt"><div class="lbl">Palette</div><div class="swatches" id="swatches"></div></div>
+          <div class="opt"><div class="lbl">Mention colors</div>
+            <div class="picks">
+              <label for="colTorah">Torah<input type="color" id="colTorah"></label>
+              <label for="colBible">Bible<input type="color" id="colBible"></label>
+              <label for="colQuran">Quran<input type="color" id="colQuran"></label>
+              <label for="colMormon">Mormon<input type="color" id="colMormon"></label>
+              <label for="colScientology">Scientology<input type="color" id="colScientology"></label>
+              <label for="colEa">EA<input type="color" id="colEa"></label>
+              <label for="colHinduism">Hinduism<input type="color" id="colHinduism"></label>
+              <label for="colBuddhism">Buddhism<input type="color" id="colBuddhism"></label>
+              <label for="colChat">Chatter<input type="color" id="colChat"></label>
+            </div></div>
+          <div class="opt"><div class="lbl">Background</div>
+            <div class="seg" data-key="bg"><button type="button" data-v="theme">Page theme</button><button type="button" data-v="night">Night</button><button type="button" data-v="paper">Paper</button><button type="button" data-v="space">Space</button></div></div>
+        </section>
+        <section class="sec">
+          <div class="eyebrow"><span>Ink</span></div>
+          <div class="opt"><div class="lbl">Stroke</div>
+            <div class="seg" data-key="ink"><button type="button" data-v="dots">Dots</button><button type="button" data-v="streaks">Streaks</button><button type="button" data-v="glow">Glow</button></div></div>
+          <div class="opt"><div class="lbl">Posts fall as</div>
+            <div class="seg" data-key="posts"><button type="button" data-v="rain">Raindrops</button><button type="button" data-v="sparks">Sparks</button></div></div>
+          <div class="opt"><label class="lbl" for="optInk">Ink thickness <output id="optInkOut"></output></label><input type="range" id="optInk" min="0.4" max="3" step="0.1"></div>
+          <div class="opt"><label class="lbl" for="optTrail">Trail length <output id="optTrailOut"></output></label><input type="range" id="optTrail" min="0" max="1" step="0.05"></div>
+          <div class="opt"><label class="lbl" for="optDensity">Density <output id="optDensityOut"></output></label><input type="range" id="optDensity" min="0.3" max="2" step="0.1"></div>
+          <label class="check"><input type="checkbox" id="optRoles"> Let each figure's role shape its motion</label>
+        </section>
+        <section class="sec">
+          <div class="eyebrow"><span>Calendars</span></div>
+          <label class="check"><input type="checkbox" id="optCal"> Move with the religious calendars</label>
+          <div class="opt"><label class="lbl" for="optCalPull">Calendar pull <output id="optCalPullOut"></output></label><input type="range" id="optCalPull" min="0.3" max="2" step="0.1"></div>
+        </section>
+        <section class="sec">
+          <div class="boardActions">
+            <button type="button" id="copySettings">Copy settings</button>
+            <button type="button" id="resetSettings">Reset</button>
+            <span class="stat" id="boardStat">Your choices are saved in this browser. Copy them and paste them into our chat if you want them as the default.</span>
+          </div>
+          <textarea id="settingsOut" rows="6" readonly hidden aria-label="Current design settings"></textarea>
+        </section>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="notes">
+    <p><b>About the numbers.</b> Each count is the number of verses that name the figure. For the Bible I used the Theographic Bible Metadata index of the King James Version, which tells apart different people who share a name. For the Quran I used the word-by-word tagging of the Quranic Arabic Corpus. For the Book of Mormon I used simple wording rules to skip its own Jacob, Joseph, Aaron and Noah. Counts become a rate per 1,000 verses so the long Bible doesn't drown out the shorter texts. "Bible" means everything after the Torah, so its five books aren't counted twice. Satan includes "the devil" in the Bible and Book of Mormon, and Iblis and al-Shaytan in the Quran. Jesus includes "Christ" in the Book of Mormon and al-Masih in the Quran.</p>
+    <p><b>About the roles.</b> Exemplar, tested, transgressor and adversary are a curatorial reading, not a verdict, and they differ by text. David's sin with Bathsheba is in the Bible but not the Quran, where prophets are protected from grave sin. The golden calf is Aaron's work in Exodus and al-Samiri's in the Quran.</p>
+    <p><b>About the calendars.</b> Dates come from your browser's Hebrew and Umm al-Qura Islamic calendars and the Western church year. Jewish and Islamic days begin at sundown, and many Muslim communities fix months by sighting the moon, so local dates can differ by a day. The weekly Torah portion is spread evenly across the year as an approximation; the real schedule doubles some portions. Orthodox churches, which date Easter differently, are not shown yet. Which figures each observance recalls is a curatorial choice.</p>
+    <p><b>About the newer movements.</b> Book of Mormon counts are approximate and count only the same figure: its own Nephite Jacob, Aaron and Ishmael are different people. Scientology's texts and Effective Altruism's books (Singer, MacAskill, Ord) share none of the 23 figures, so they connect through four shared ideas whose weights are a curatorial reading. Effective Altruism is a philanthropic movement, not a religion, and doesn't describe itself as one. Their dials run on the civil year.</p>
+    <p><b>About Hinduism and Buddhism.</b> Neither shares the Abrahamic figures, so they connect through shared ideas and two parallel figures: Manu, who survives a flood like Noah, and Mara, who tempts the Buddha as Satan tempts Jesus. Festival dates are worked out from computed new and full moons in Indian time with simple solar windows. Regional calendars differ, and a leap month can move a festival such as Vesak by a full month.</p>
+    <p><b>About the leaders.</b> A live post counts as a leader's when the account's Bluesky profile describes them as clergy (rabbi, pastor, priest, imam, swami, monk and so on), or when the account is listed in the site's leaders.json file, which is where official accounts go. Profiles are self-described and unverified. Simulated leader posts are written in the voice of a role, never a real person.</p>
+    <p><b>About the chatter.</b> On the website, posts come live from Bluesky's public Jetstream feed. Your browser reads every new post and keeps the ones that name a figure, an idea or a text, in English, Hebrew, Arabic or a few European languages. Common names like David, Mary or Jacob only count with a religious word nearby. Posts with adult or abusive content are skipped, but no filter is perfect: turn off "Show the text of live posts" to show only the drops. Where the live feed can't connect, as in this preview, the posts are simulated.</p>
+  </footer>
+</div>
+
+<script>
+(() => {
+const CORPUS = {
+  torah:{label:'Torah', sub:'Genesis to Deuteronomy', verses:5852},
+  bible:{label:'Bible', sub:'Prophets, Writings, New Testament', verses:25250},
+  quran:{label:'Quran', sub:'114 surahs', verses:6236},
+  mormon:{label:'Book of Mormon', short:'B. of Mormon', sub:'Latter-day Saint scripture, 1830', verses:6604},
+  scientology:{label:'Scientology', sub:'L. Ron Hubbard\'s writings', verses:0},
+  ea:{label:'Effective Altruism', short:'EA', sub:'Singer, MacAskill, Ord', verses:0},
+  hinduism:{label:'Hinduism', sub:'Vedas, Upanishads, Gita, epics', verses:0},
+  buddhism:{label:'Buddhism', sub:'Pali Canon, Dhammapada, sutras', verses:0}
+};
+const ALLKEYS = ['torah','bible','quran','mormon','scientology','ea','hinduism','buddhism'];
+const KEYS = ALLKEYS.slice();
+const BELOW = new Set(['quran','mormon','scientology','hinduism','buddhism']);
+const ROLE_LABEL = {ex:'exemplar', te:'tested', tr:'transgressor', ad:'adversary'};
+
+// counts: approximate original-language name mentions. u: story present but figure unnamed. role: default, ro: per-text override.
+const C = [
+ {id:'adam', en:'Adam', he:'אָדָם', heTr:'Adam', ar:'آدم', arTr:'Adam', n:{torah:20,bible:9,quran:25}, role:'te', buzz:3,
+  note:{torah:'Formed from the earth, placed in Eden, eats from the tree.', bible:'Paul sets the "first Adam" against Christ.', quran:'Taught the names of all things. The angels are told to bow to him. Forgiven after the fall.'}},
+ {id:'eve', en:'Eve', he:'חַוָּה', heTr:'Chavah', ar:'حواء', arTr:'Hawwa', n:{torah:2,bible:2,quran:0}, u:{quran:1}, role:'te', buzz:3,
+  note:{torah:'Named "mother of all living".', bible:'Mentioned by Paul in 2 Corinthians and 1 Timothy.', quran:'Present as "his wife" but never named. She shares the fault with Adam equally.'}},
+ {id:'cain', en:'Cain', he:'קַיִן', heTr:'Kayin', ar:'قابيل', arTr:'Qabil (later tradition)', n:{torah:16,bible:3,quran:0}, u:{quran:1}, role:'tr', buzz:2,
+  note:{torah:'Kills his brother Abel. He is marked and exiled.', bible:'"The way of Cain" in Jude and 1 John.', quran:'"The two sons of Adam", unnamed. A raven shows the killer how to bury his brother (5:27-31).'}},
+ {id:'noah', en:'Noah', he:'נֹחַ', heTr:'Noach', ar:'نوح', arTr:'Nuh', n:{torah:39,bible:19,quran:43}, role:'ex', buzz:4,
+  note:{torah:'The ark, the flood, the covenant of the rainbow.', bible:'Ezekiel names him among the righteous. Jesus cites "the days of Noah".', quran:'Preaches for 950 years. His own son refuses the ark. Surah 71 bears his name.'}},
+ {id:'abraham', en:'Abraham', he:'אַבְרָהָם', heTr:'Avraham', ar:'إبراهيم', arTr:'Ibrahim', n:{torah:233,bible:107,quran:69}, role:'ex', buzz:3,
+  note:{torah:'Called out of Haran. The covenant. The binding of Isaac.', bible:'Paul\'s father of faith. "Abraham\'s bosom" in Luke.', quran:'Breaks his people\'s idols. Raises the Kaaba with Ishmael. Called "friend of God".'}},
+ {id:'lot', en:'Lot', he:'לוֹט', heTr:'Lot', ar:'لوط', arTr:'Lut', n:{torah:33,bible:4,quran:27}, role:'ex', ro:{torah:'te'}, buzz:1,
+  note:{torah:'Escapes Sodom. His wife turns to salt. The episode with his daughters.', bible:'"Remember Lot\'s wife." 2 Peter calls him "righteous Lot".', quran:'A prophet who warns his people. His wife is left behind.'}},
+ {id:'ishmael', en:'Ishmael', he:'יִשְׁמָעֵאל', heTr:'Yishmael', ar:'إسماعيل', arTr:'Isma\'il', n:{torah:18,bible:2,quran:12}, role:'ex', buzz:1.2,
+  note:{torah:'Son of Hagar, sent into the desert, father of twelve princes.', bible:'Paul\'s allegory of Hagar and Sarah.', quran:'A prophet who helps raise the foundations of the House.'}},
+ {id:'isaac', en:'Isaac', he:'יִצְחָק', heTr:'Yitzchak', ar:'إسحاق', arTr:'Ishaq', n:{torah:80,bible:50,quran:17}, role:'ex', buzz:1,
+  note:{torah:'Son of the promise, bound on Moriah, blesses Jacob.', bible:'The child of promise in Hebrews.', quran:'Glad tidings of a son, given to Abraham and his wife.'}},
+ {id:'jacob', en:'Jacob', he:'יַעֲקֹב', heTr:'Yaakov', ar:'يعقوب', arTr:'Ya\'qub', n:{torah:180,bible:180,quran:16}, role:'ex', ro:{torah:'te'}, buzz:1.2,
+  note:{torah:'Takes Esau\'s blessing, wrestles the angel, is renamed Israel.', bible:'"The God of Jacob" throughout the Psalms.', quran:'Grieves for Joseph until his eyes turn white. Counsels his sons to patience.'}},
+ {id:'joseph', en:'Joseph', he:'יוֹסֵף', heTr:'Yosef', ar:'يوسف', arTr:'Yusuf', n:{torah:200,bible:40,quran:27}, role:'te', buzz:3,
+  note:{torah:'Sold by his brothers, rises in Egypt, forgives them.', bible:'Stephen retells the story in Acts 7.', quran:'Surah 12, "the most beautiful of stories", told in one continuous chapter.'}},
+ {id:'moses', en:'Moses', he:'מֹשֶׁה', heTr:'Moshe', ar:'موسى', arTr:'Musa', n:{torah:650,bible:200,quran:136}, role:'ex', buzz:6,
+  note:{torah:'The Exodus, Sinai, the Law. He dies before entering the land.', bible:'The lawgiver set beside Christ. Appears at the Transfiguration.', quran:'The most-named person in the Quran. Confronts Pharaoh and speaks with God at the bush.'}},
+ {id:'aaron', en:'Aaron', he:'אַהֲרֹן', heTr:'Aharon', ar:'هارون', arTr:'Harun', n:{torah:300,bible:47,quran:20}, role:'ex', ro:{torah:'te'}, buzz:1,
+  note:{torah:'The first high priest. He makes the golden calf.', bible:'His priesthood is compared with Christ\'s in Hebrews.', quran:'Moses\'s helper and spokesman. The calf is made by al-Samiri, not him.'}},
+ {id:'pharaoh', en:'Pharaoh', he:'פַּרְעֹה', heTr:'Paroh', ar:'فرعون', arTr:'Fir\'awn', n:{torah:230,bible:44,quran:74}, role:'ad', buzz:2.2,
+  note:{torah:'His heart hardens through ten plagues.', bible:'Paul cites him in Romans 9.', quran:'The pattern of a tyrant. He believes as he drowns, too late, and his body is kept as a sign.'}},
+ {id:'david', en:'David', he:'דָּוִד', heTr:'David', ar:'داود', arTr:'Dawud', n:{torah:0,bible:1080,quran:16}, role:'ex', ro:{bible:'te'}, buzz:4,
+  note:{bible:'Shepherd, king and psalmist. Bathsheba and Uriah.', quran:'Given the Zabur (Psalms). Mountains and birds praise God with him.'}},
+ {id:'solomon', en:'Solomon', he:'שְׁלֹמֹה', heTr:'Shlomo', ar:'سليمان', arTr:'Sulayman', n:{torah:0,bible:300,quran:17}, role:'ex', ro:{bible:'te'}, buzz:2,
+  note:{bible:'Wisdom, the Temple, the Queen of Sheba. Turns to other gods in old age.', quran:'Understands the ants and the hoopoe. Commands the jinn.'}},
+ {id:'job', en:'Job', he:'אִיּוֹב', heTr:'Iyov', ar:'أيوب', arTr:'Ayyub', n:{torah:0,bible:59,quran:4}, role:'te', buzz:2,
+  note:{bible:'Loses everything and argues with God.', quran:'A model of patience: "how excellent a servant".'}},
+ {id:'jonah', en:'Jonah', he:'יוֹנָה', heTr:'Yonah', ar:'يونس', arTr:'Yunus', n:{torah:0,bible:28,quran:4}, role:'te', buzz:2,
+  note:{bible:'Flees, is swallowed by a fish, and Nineveh repents. Read aloud on Yom Kippur.', quran:'Also called Dhul-Nun, "he of the fish". His town believed and was spared.'}},
+ {id:'elijah', en:'Elijah', he:'אֵלִיָּהוּ', heTr:'Eliyahu', ar:'إلياس', arTr:'Ilyas', n:{torah:0,bible:100,quran:2}, role:'ex', buzz:1.4,
+  note:{bible:'The contest on Carmel. Taken up in a whirlwind.', quran:'Warns his people against worshipping Baal.'}},
+ {id:'john', en:'John the Baptist', he:'יוֹחָנָן', heTr:'Yochanan', ar:'يحيى', arTr:'Yahya', n:{torah:0,bible:90,quran:5}, role:'ex', buzz:1.2,
+  note:{bible:'Baptizes Jesus. Beheaded by Herod.', quran:'Born to the aged Zakariya. "Peace on him the day he was born" (19:15).'}},
+ {id:'mary', en:'Mary', he:'מִרְיָם', heTr:'Miryam', ar:'مريم', arTr:'Maryam', n:{torah:0,bible:20,quran:34}, role:'ex', buzz:5,
+  note:{bible:'The annunciation. She stands at the cross.', quran:'The only woman named in the Quran, and more often than in the New Testament. Surah 19 bears her name.'}},
+ {id:'jesus', en:'Jesus', he:'יֵשׁוּעַ', heTr:'Yeshua', ar:'عيسى', arTr:'\'Isa', n:{torah:0,bible:950,quran:25}, role:'ex', buzz:10,
+  note:{bible:'The central figure of the Gospels.', quran:'A prophet and the Messiah, born of Maryam. Speaks from the cradle.'}},
+ {id:'gabriel', en:'Gabriel', he:'גַּבְרִיאֵל', heTr:'Gavriel', ar:'جبريل', arTr:'Jibril', n:{torah:0,bible:4,quran:3}, role:'ex', buzz:1,
+  note:{bible:'Appears to Daniel. Announces John and Jesus in Luke.', quran:'The angel who brings the revelation.'}},
+ {id:'satan', en:'Satan', he:'שָׂטָן', heTr:'Satan', ar:'إبليس', arTr:'Iblis / al-Shaytan', n:{torah:0,bible:50,quran:80}, u:{torah:1}, role:'ad', buzz:5,
+  note:{torah:'The serpent in Eden is never called Satan.', bible:'The accuser in Job, the tempter in the Gospels.', quran:'Iblis refuses to bow to Adam. Al-Shaytan whispers.'}}
+];
+const MORMON = {
+ adam:[27,'"Adam fell that men might be; and men are, that they might have joy" (2 Nephi 2:25).'],
+ eve:[2,'Named with Adam as "our first parents" (1 Nephi 5:11).'],
+ cain:[2,'Cain\'s pact with Satan is the origin of the "secret combinations" (Helaman 6:27).'],
+ noah:[3,'The flood is recalled: "the waters of Noah" (3 Nephi 22:9).'],
+ abraham:[30,'Abraham pays tithes to Melchizedek (Alma 13:15).'],
+ isaac:[15,'Named with Abraham and Jacob as the fathers.'],
+ jacob:[15,'The patriarch, named with Abraham and Isaac. Not the Nephite prophet Jacob.'],
+ joseph:[20,'Joseph of Egypt prophesies a latter-day seer (2 Nephi 3).'],
+ moses:[60,'Nephi points to Moses parting the sea as a pattern for his people (1 Nephi 4:2).'],
+ pharaoh:[1,'The armies of Pharaoh drown in the Red Sea (1 Nephi 17:27).'],
+ david:[8,'The prophet Jacob condemns David\'s many wives and concubines (Jacob 2:24).'],
+ solomon:[4,'Named with David in the same rebuke (Jacob 2:24).'],
+ elijah:[1,'Jesus repeats Malachi\'s promise of Elijah\'s return (3 Nephi 25:5).'],
+ mary:[2,'"A virgin ... whose name shall be Mary" (Alma 7:10).'],
+ jesus:[550,'The risen Christ visits the Americas and teaches (3 Nephi 11-28).'],
+ satan:[150,'"The devil ... seeketh that all men might be miserable like unto himself" (2 Nephi 2:27).']
+};
+Object.entries(MORMON).forEach(([id,[n,note]]) => { const c = C.find(x => x.id === id); c.n.mormon = n; c.note.mormon = note; });
+// Verses that name each figure (see "About the numbers"; scripts/count_names.py rebuilds these)
+const REAL = {
+ adam:{torah:17,bible:9,quran:25,mormon:25}, eve:{torah:2,bible:2,quran:0,mormon:3}, cain:{torah:13,bible:3,quran:0,mormon:2},
+ noah:{torah:35,bible:12,quran:43,mormon:3}, abraham:{torah:183,bible:94,quran:63,mormon:27}, lot:{torah:29,bible:5,quran:27,mormon:0},
+ ishmael:{torah:15,bible:3,quran:12,mormon:0}, isaac:{torah:92,bible:31,quran:16,mormon:13}, jacob:{torah:191,bible:154,quran:16,mormon:40},
+ joseph:{torah:156,bible:43,quran:26,mormon:21}, moses:{torah:586,bible:188,quran:131,mormon:63}, aaron:{torah:286,bible:45,quran:20,mormon:0},
+ pharaoh:{torah:185,bible:47,quran:67,mormon:2}, david:{torah:0,bible:896,quran:16,mormon:7}, solomon:{torah:0,bible:273,quran:16,mormon:5},
+ job:{torah:0,bible:53,quran:4,mormon:0}, jonah:{torah:0,bible:24,quran:6,mormon:0}, elijah:{torah:0,bible:92,quran:3,mormon:1},
+ john:{torah:0,bible:89,quran:5,mormon:0}, mary:{torah:0,bible:21,quran:31,mormon:2}, jesus:{torah:0,bible:1828,quran:31,mormon:407},
+ gabriel:{torah:0,bible:4,quran:3,mormon:0}, satan:{torah:0,bible:92,quran:74,mormon:109}
+};
+Object.entries(REAL).forEach(([id, n]) => { C.find(x => x.id === id).n = n; });
+(() => { const j = C.find(x => x.id === 'john'); j.u = {mormon:1}; j.note.mormon = 'Lehi foresees a prophet who will baptize the Messiah, unnamed (1 Nephi 10:7-10).';
+  C.find(x => x.id === 'david').ro.mormon = 'te'; C.find(x => x.id === 'solomon').ro.mormon = 'te'; })();
+const IDEAS = [
+ {id:'giving', en:'Giving a tenth', w:{torah:2,bible:2,quran:3,mormon:2,ea:3,hinduism:3,buddhism:3}, buzz:2, note:{
+   torah:'The tithe (ma\'aser). Abraham gives a tenth to Melchizedek (Genesis 14:20).', bible:'"Bring ye all the tithes into the storehouse" (Malachi 3:10), and the widow\'s two coins.',
+   quran:'Zakat, the obligatory alms, is a pillar of Islam, and charity (sadaqa) runs throughout.', mormon:'Alma recalls Abraham\'s tithe. Latter-day Saints give a tenth of their income.',
+   ea:'Giving What We Can asks members to pledge 10% of income to the most effective charities.'}},
+ {id:'self', en:'The undying self', w:{torah:1,bible:2,quran:2,mormon:3,scientology:3,hinduism:3,buddhism:1}, buzz:1, note:{
+   torah:'Nefesh: God breathes life into Adam (Genesis 2:7). The Torah says little about an afterlife.', bible:'"Fear not them which kill the body, but are not able to kill the soul" (Matthew 10:28).',
+   quran:'The ruh is breathed into Adam, and "every soul shall taste death" before returning to God (3:185).', mormon:'Alma describes the soul between death and resurrection (Alma 40).',
+   scientology:'The thetan: a person is an immortal spiritual being, not a body or a mind.'}},
+ {id:'end', en:'The end of the world', w:{bible:3,quran:3,mormon:2,ea:3,hinduism:2,buddhism:1}, buzz:2, note:{
+   bible:'Revelation: a new heaven and a new earth.', quran:'The Day of Judgment (al-Qiyama) recurs on almost every page.',
+   mormon:'Destruction before Christ\'s visit, and prophecies of the last days.', ea:'Existential risk. Toby Ord\'s The Precipice puts the chance of catastrophe this century at about one in six.'}},
+ {id:'golden', en:'The Golden Rule', w:{torah:2,bible:3,quran:1,mormon:2,scientology:2,ea:2,hinduism:2,buddhism:2}, buzz:1, note:{
+   torah:'"Love your neighbour as yourself" (Leviticus 19:18).', bible:'"Whatsoever ye would that men should do to you, do ye even so to them" (Matthew 7:12).',
+   quran:'"Woe to those who give short measure" (83:1-3). The rule itself is stated in the hadith.', mormon:'Jesus repeats it to the Nephites (3 Nephi 14:12).',
+   scientology:'"Try to treat others as you would want them to treat you." A precept of Hubbard\'s The Way to Happiness.', ea:'Peter Singer\'s drowning child: distance doesn\'t change what we owe a stranger.'}},
+ {id:'rebirth', en:'Rebirth', w:{hinduism:3,buddhism:3,scientology:2}, buddy:0, buzz:1, note:{
+   hinduism:'Samsara. "As a person puts on new garments, giving up old ones, the soul accepts new bodies" (Bhagavad Gita 2:22).',
+   buddhism:'Samsara, the cycle driven by karma. Awakening, nirvana, ends it.',
+   scientology:'Past lives are explored in auditing; Hubbard wrote of the thetan living many lifetimes.'}}
+];
+(() => {
+  const N = (id, k, t) => IDEAS.find(i => i.id === id).note[k] = t;
+  N('giving','hinduism','Dana. The Gita calls a gift given at the right time, to a worthy person, expecting nothing back, sattvic (17:20).');
+  N('giving','buddhism','Dana, generosity, is the first of the perfections. Lay people give to monastics every day.');
+  N('self','hinduism','Atman. "It is not born, nor does it ever die" (Bhagavad Gita 2:20).');
+  N('self','buddhism','Argues against it: anatta, "not-self", teaches that there is no permanent self.');
+  N('end','hinduism','Pralaya, the dissolution at the end of a cosmic cycle. The Kali Yuga ends with Kalki.');
+  N('end','buddhism','The teaching declines over time until Maitreya, the next Buddha, renews it.');
+  N('golden','hinduism','"One should never do to another that which one would regard as injurious to oneself" (Mahabharata 13.114.8).');
+  N('golden','buddhism','"Putting oneself in the place of another, one should not kill nor cause another to kill" (Dhammapada 129).');
+  const noah = C.find(x => x.id === 'noah'), sat = C.find(x => x.id === 'satan');
+  noah.u = Object.assign(noah.u || {}, {hinduism:1}); noah.parLabel = {hinduism:'Parallel figure: Manu'};
+  noah.note.hinduism = 'A parallel, not the same person: Manu is warned by a fish (Matsya) and survives the flood in a boat (Shatapatha Brahmana 1.8.1).';
+  sat.u = Object.assign(sat.u || {}, {buddhism:1}); sat.parLabel = {buddhism:'Parallel figure: Mara'};
+  sat.note.buddhism = 'A parallel, not the same being: Mara tempts the Buddha under the Bodhi tree, as Satan tempts Jesus in the wilderness.';
+})();
+IDEAS.forEach(i => C.push(Object.assign({idea:true, he:'', ar:'', heTr:'', arTr:'', n:{}, role:'ex'}, i)));
+const ALLC = C.slice();
+const byId = Object.fromEntries(ALLC.map(c => [c.id, c]));
+ALLC.forEach(c => {
+  c.rate = {}; ALLKEYS.forEach(k => c.rate[k] = c.idea ? (c.w[k] || 0)*3 : CORPUS[k].verses ? (c.n[k] || 0) / CORPUS[k].verses * 1000 : 0);
+  c.total = KEYS.reduce((s,k) => s + c.rate[k], 0);
+  c.mentions = 0; c.buzzGlow = 0; c.x = 0; c.y = 0; c.r = 8;
+});
+const roleOf = (c,k) => (c.ro && c.ro[k]) || c.role;
+const motionRole = (c,k) => S.roles ? roleOf(c,k) : 'ex';
+
+const TERMS = [
+ {id:'mercy', en:'mercy', root:'r-ḥ-m', he:'רַחֲמִים', heTr:'rachamim', ar:'رحمة', arTr:'rahma', chars:['jonah','joseph','job','adam','jacob'], note:'Both words come from the root for womb.'},
+ {id:'peace', en:'peace', root:'š-l-m', he:'שָׁלוֹם', heTr:'shalom', ar:'سلام', arTr:'salam', chars:['abraham','noah','solomon','john','jesus'], note:'Solomon\'s name, Shlomo, grows from the same root. The Quran sends "peace" on Noah (37:79) and Abraham (37:109).'},
+ {id:'offering', en:'offering', root:'q-r-b', he:'קָרְבָּן', heTr:'korban', ar:'قربان', arTr:'qurban', chars:['cain','abraham','isaac','ishmael','aaron'], note:'The Quran uses qurban for the offerings of the two sons of Adam (5:27). The root means "to come near".'},
+ {id:'prophet', en:'prophet', root:'n-b-ʾ', he:'נָבִיא', heTr:'navi', ar:'نبي', arTr:'nabi', chars:['moses','noah','elijah','jonah','john','jesus','abraham'], note:'Nearly the same word in both languages.'},
+ {id:'servant', en:'servant', root:'ʿ-b-d', he:'עֶבֶד', heTr:'eved', ar:'عبد', arTr:'abd', chars:['job','david','solomon','moses','jesus'], note:'"Servant of God" is a title of honor in both. Moses is "servant of the LORD" (Deut 34:5); Jesus says "I am the servant of God" (19:30).'},
+ {id:'truthful', en:'righteous', root:'ṣ-d-q', he:'צַדִּיק', heTr:'tzaddik', ar:'صدّيق', arTr:'siddiq', chars:['noah','joseph','abraham','mary','lot'], note:'Hebrew leans toward righteousness, Arabic toward truthfulness. Genesis calls Noah a tzaddik (6:9). The Quran calls Joseph al-siddiq (12:46) and Mary siddiqa (5:75).'},
+ {id:'book', en:'book', root:'k-t-b', he:'כְּתָב', heTr:'ktav', ar:'كتاب', arTr:'kitab', chars:['moses','david','jesus'], note:'The Quran calls Jews and Christians ahl al-kitab, "people of the book".'}
+];
+TERMS.forEach(t => t.count = 0);
+
+const EVENTS = [
+ {label:'Passover week', ids:['moses','aaron','pharaoh']},
+ {label:'Eid al-Adha', ids:['abraham','ishmael','isaac']},
+ {label:'Christmas Eve', ids:['jesus','mary','gabriel']},
+ {label:'Yom Kippur: the book of Jonah is read', ids:['jonah']},
+ {label:'Flood headlines', ids:['noah']},
+ {label:'Ramadan night: Surah Yusuf', ids:['joseph','jacob']},
+ {label:'A viral debate about evil', ids:['satan','cain','pharaoh','job']}
+];
+let eventIdx = 0, activeEvent = null, eventUntil = 0;
+
+// ---------- calendars ----------
+const DAY = 864e5;
+const T0 = Date.UTC(2024, 8, 1), T1 = Date.UTC(2029, 0, 31);
+const SCRUB0 = Math.round((Date.UTC(2025, 9, 1) - T0)/DAY), SCRUB1 = Math.round((Date.UTC(2028, 8, 30) - T0)/DAY);
+const HOLY = {torah:6, bible:0, quran:5, mormon:0, scientology:0, ea:-1, hinduism:-1, buddhism:-1};
+const MOON = {NEW:[], FULL:[], NS:new Set(), FS:new Set()};
+const idxU = (y,m,d) => Math.round((Date.UTC(y,m,d) - T0)/DAY);
+const YRS = [2024, 2025, 2026, 2027, 2028];
+const inWin = (list, Y, m1, d1, m2, d2) => list.filter(i => i >= idxU(Y,m1,d1) && i <= idxU(Y,m2,d2));
+const perYear = fn => () => YRS.flatMap(Y => fn(Y));
+const holiOf = Y => inWin(MOON.FULL, Y, 1, 22, 2, 24)[0];
+const chaitraNew = Y => { const h = holiOf(Y); return h === undefined ? undefined : MOON.NEW.find(n => n > h); };
+const vesakOf = Y => inWin(MOON.FULL, Y, 3, 26, 4, 25)[0];
+const asalhaOf = Y => inWin(MOON.FULL, Y, 6, 1, 6, 30)[0];
+function moonPhases(){
+  const rad = x => x*Math.PI/180;
+  for (let k = 295; k <= 365; k++) [0, .5].forEach(ph => {
+    const kk = k + ph, T = kk/1236.85, E = 1 - .002516*T;
+    const M = rad(2.5534 + 29.10535670*kk), Mp = rad(201.5643 + 385.81693528*kk), F = rad(160.7108 + 390.67050284*kk);
+    let jde = 2451550.09766 + 29.530588861*kk + .00015437*T*T;
+    const a = ph ? [-.40614, .17302, .01614, .01043, .00734, -.00515] : [-.40720, .17241, .01608, .01039, .00739, -.00514];
+    jde += a[0]*Math.sin(Mp) + a[1]*E*Math.sin(M) + a[2]*Math.sin(2*Mp) + a[3]*Math.sin(2*F) + a[4]*E*Math.sin(Mp - M) + a[5]*E*Math.sin(Mp + M);
+    const ms = (jde - 2440587.5)*DAY + 5.5*3600e3;   // Indian Standard Time
+    const i = Math.floor((ms - T0)/DAY);
+    if (i >= 0 && i < CAL.days.length) (ph ? MOON.FULL : MOON.NEW).push(i);
+  });
+  MOON.NEW.sort((a,b) => a-b); MOON.FULL.sort((a,b) => a-b);
+  MOON.NS = new Set(MOON.NEW); MOON.FS = new Set(MOON.FULL);
+}
+const mkFmt = (loc, o) => { try { return new Intl.DateTimeFormat(loc, Object.assign({timeZone:'UTC'}, o)); } catch(e) { return null; } };
+const fmtH = mkFmt('en-u-ca-hebrew', {day:'numeric', month:'long', year:'numeric'});
+const fmtI = mkFmt('en-u-ca-islamic-umalqura', {day:'numeric', month:'numeric', year:'numeric'});
+const fmtIL = mkFmt('en-u-ca-islamic-umalqura', {day:'numeric', month:'long', year:'numeric'});
+const fmtG = mkFmt('en-GB', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+const fmtShort = mkFmt('en-GB', {day:'numeric', month:'short'});
+function parts(f, t){ const o = {}; if (f) f.formatToParts(t).forEach(p => o[p.type] = p.value); return o; }
+function HMON(n){ n = (n||'').toLowerCase();
+  if (/^tis/.test(n)) return 'tishri'; if (/^(hes|ches|mar)/.test(n)) return 'heshvan'; if (/^kis/.test(n)) return 'kislev';
+  if (/^tev/.test(n)) return 'tevet'; if (/^(she|shv)/.test(n)) return 'shevat'; if (/adar (ii|2)/.test(n)) return 'adar2';
+  if (/adar (i|1)/.test(n)) return 'adar1'; if (/^adar/.test(n)) return 'adar'; if (/^nis/.test(n)) return 'nisan';
+  if (/^iy/.test(n)) return 'iyar'; if (/^siv/.test(n)) return 'sivan'; if (/^tam/.test(n)) return 'tamuz';
+  if (/^av/.test(n)) return 'av'; if (/^el/.test(n)) return 'elul'; return n; }
+function easter(Y){ const a=Y%19,b=Math.floor(Y/100),c=Y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),
+  h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),
+  mo=Math.floor((h+l-7*m+114)/31),da=((h+l-7*m+114)%31)+1; return Date.UTC(Y,mo-1,da); }
+function advent1(Y){ const n27 = Date.UTC(Y,10,27); return n27 + ((7 - new Date(n27).getUTCDay()) % 7)*DAY; }
+
+const PARASHOT = [
+ ['Bereshit',['adam','eve','cain']],['Noach',['noah']],['Lech-Lecha',['abraham','lot']],['Vayera',['abraham','lot','isaac','ishmael']],
+ ['Chayei Sarah',['abraham','isaac','ishmael']],['Toldot',['isaac','jacob']],['Vayetze',['jacob']],['Vayishlach',['jacob']],
+ ['Vayeshev',['joseph','jacob']],['Miketz',['joseph','pharaoh']],['Vayigash',['joseph','jacob','pharaoh']],['Vayechi',['jacob','joseph']],
+ ['Shemot',['moses','pharaoh','aaron']],['Va\'era',['moses','aaron','pharaoh']],['Bo',['moses','aaron','pharaoh']],['Beshalach',['moses','pharaoh']],
+ ['Yitro',['moses']],['Mishpatim',['moses']],['Terumah',['moses']],['Tetzaveh',['aaron']],['Ki Tisa',['moses','aaron']],['Vayakhel',['moses']],['Pekudei',['moses']],
+ ['Vayikra',['moses']],['Tzav',['aaron','moses']],['Shemini',['aaron']],['Tazria',['moses','aaron']],['Metzora',['moses','aaron']],
+ ['Acharei Mot',['aaron']],['Kedoshim',['moses']],['Emor',['moses','aaron']],['Behar',['moses']],['Bechukotai',['moses']],
+ ['Bamidbar',['moses','aaron']],['Nasso',['moses','aaron']],['Beha\'alotcha',['moses','aaron']],['Shelach',['moses']],['Korach',['moses','aaron']],
+ ['Chukat',['moses','aaron']],['Balak',[]],['Pinchas',['moses','aaron']],['Matot',['moses']],['Masei',['moses','aaron']],
+ ['Devarim',['moses']],['Va\'etchanan',['moses']],['Eikev',['moses']],['Re\'eh',['moses']],['Shoftim',['moses']],['Ki Teitzei',['moses']],
+ ['Ki Tavo',['moses']],['Nitzavim',['moses']],['Vayelech',['moses']],['Ha\'azinu',['moses']]
+];
+const UTC = (y,m,d) => Date.UTC(y,m,d);
+const CAL_EVENTS = [
+ {k:'torah', name:'Rosh Hashanah', chars:['abraham','isaac','ishmael'], when:d => d.hm==='tishri' && d.hd<=2, note:'Genesis 21 and 22 are read: Hagar and Ishmael, then the binding of Isaac.'},
+ {k:'torah', name:'Yom Kippur', chars:['jonah','aaron'], when:d => d.hm==='tishri' && d.hd===10, note:'The morning reading is the high priest\'s service (Leviticus 16). The Book of Jonah is read in the afternoon.'},
+ {k:'torah', name:'Sukkot', chars:['moses'], when:d => d.hm==='tishri' && d.hd>=15 && d.hd<=21, note:'Booths recall the wilderness years under Moses.'},
+ {k:'torah', name:'Simchat Torah', chars:['moses','adam'], when:d => d.hm==='tishri' && (d.hd===22 || d.hd===23), note:'The last lines of Deuteronomy and the first of Genesis are read back to back.'},
+ {k:'torah', name:'Hanukkah', chars:[], start:d => d.hm==='kislev' && d.hd===25, len:8, note:'The rededication of the Temple, told in Maccabees. None of the shared figures are in this story.'},
+ {k:'torah', name:'Purim', chars:[], when:d => (d.hm==='adar' || d.hm==='adar2') && d.hd===14, note:'The Book of Esther is read.'},
+ {k:'torah', name:'Passover', chars:['moses','aaron','pharaoh','elijah'], when:d => d.hm==='nisan' && d.hd>=15 && d.hd<=22, note:'The seder retells the Exodus, and a cup is poured for Elijah.'},
+ {k:'torah', name:'Shavuot', chars:['moses','david'], when:d => d.hm==='sivan' && (d.hd===6 || d.hd===7), note:'The giving of the Torah at Sinai. By tradition also the day David was born and died; the Book of Ruth, which ends with his family line, is read.'},
+ {k:'torah', name:'Tisha B\'Av', chars:[], when:d => d.hm==='av' && d.hd===9, note:'A fast for the destruction of the Temples. Lamentations is read.'},
+ {k:'bible', name:'Advent', chars:['mary','john','gabriel'], when:d => d.t >= advent1(d.gy) && d.t <= UTC(d.gy,11,24), note:'Four weeks of waiting. The readings follow John the Baptist and Gabriel\'s message to Mary.'},
+ {k:'bible', name:'Christmas', chars:['jesus','mary'], when:d => (d.gm===11 && d.gd>=25) || (d.gm===0 && d.gd<=5), note:'The twelve days of Christmas.'},
+ {k:'bible', name:'Epiphany and the Baptism of the Lord', chars:['jesus','john'], when:d => d.gm===0 && d.gd>=6 && d.gd<=12, note:'The magi, then John baptizing Jesus in the Jordan.'},
+ {k:'bible', name:'Presentation in the Temple', chars:['jesus','mary'], when:d => d.gm===1 && d.gd===2, note:'Mary brings the infant Jesus to the Temple.'},
+ {k:'bible', name:'Annunciation', chars:['gabriel','mary'], when:d => d.gm===2 && d.gd===25, note:'Gabriel tells Mary she will bear a son.'},
+ {k:'bible', name:'Lent', chars:['jesus','satan','adam'], when:d => d.t >= d.E - 46*DAY && d.t < d.E - 7*DAY, note:'Forty days. Ash Wednesday recalls "dust you are" from Genesis 3, and the first Sunday reads the temptation of Jesus.'},
+ {k:'bible', name:'Holy Week', chars:['jesus','mary'], when:d => d.t >= d.E - 7*DAY && d.t < d.E - DAY, note:'Palm Sunday to Good Friday.'},
+ {k:'bible', name:'Easter Vigil', chars:['adam','noah','abraham','isaac','moses','pharaoh'], when:d => d.t === d.E - DAY, note:'In many churches the vigil readings run from creation through the flood, the binding of Isaac and the crossing of the sea.'},
+ {k:'bible', name:'Easter', chars:['jesus','mary'], when:d => d.t >= d.E && d.t < d.E + 8*DAY, note:'The resurrection, and its octave.'},
+ {k:'bible', name:'Pentecost', chars:[], when:d => d.t === d.E + 49*DAY, note:'The Spirit comes to the disciples, fifty days after Easter, at the Jewish feast of Shavuot.'},
+ {k:'bible', name:'Nativity of John the Baptist', chars:['john'], when:d => d.gm===5 && d.gd===24, note:'Six months before Christmas, following Luke.'},
+ {k:'bible', name:'Transfiguration', chars:['jesus','moses','elijah'], when:d => d.gm===7 && d.gd===6, note:'Moses and Elijah appear with Jesus on the mountain.'},
+ {k:'bible', name:'Assumption of Mary', chars:['mary'], when:d => d.gm===7 && d.gd===15, note:'Kept by Catholic and Orthodox churches.'},
+ {k:'bible', name:'Michaelmas', chars:['gabriel','satan'], when:d => d.gm===8 && d.gd===29, note:'The feast of the archangels, Gabriel among them. Revelation 12 is read: the dragon, "called the devil and Satan", is thrown down.'},
+ {k:'quran', name:'Islamic New Year', chars:[], when:d => d.im===1 && d.id===1, note:'1 Muharram.'},
+ {k:'quran', name:'Ashura', chars:['moses','pharaoh','noah'], when:d => d.im===1 && d.id===10, note:'Many Muslims fast in thanks that God saved Moses from Pharaoh; some traditions add that Noah\'s ark came to rest. For Shia Muslims it is above all the mourning of Husayn.'},
+ {k:'quran', name:'Mawlid', chars:[], when:d => d.im===3 && d.id===12, note:'The Prophet Muhammad\'s birthday, kept by many but not all Muslims. Muhammad is named only in the Quran, so he is not one of the shared figures.'},
+ {k:'quran', name:'Isra and Mi\'raj', chars:['adam','jesus','john','joseph','aaron','moses','abraham'], when:d => d.im===7 && d.id===27, note:'The night journey. In the hadith, Muhammad meets these prophets in the heavens.'},
+ {k:'quran', name:'Ramadan', chars:['gabriel','giving'], when:d => d.im===9, note:'The month the Quran was first revealed, through Jibril (Gabriel).'},
+ {k:'quran', name:'Laylat al-Qadr', chars:['gabriel'], when:d => d.im===9 && d.id===27, note:'Widely observed on the 27th night: "the angels and the Spirit descend" (97:4).'},
+ {k:'quran', name:'Eid al-Fitr', chars:[], when:d => d.im===10 && d.id<=3, note:'The feast that ends Ramadan.'},
+ {k:'quran', name:'Day of Arafah', chars:['adam','eve'], when:d => d.im===12 && d.id===9, note:'Pilgrims stand at Arafat. One tradition holds that Adam and Eve were reunited there.'},
+ {k:'quran', name:'Hajj and Eid al-Adha', chars:['abraham','ishmael'], when:d => d.im===12 && d.id>=8 && d.id<=13, note:'Pilgrims retrace Hagar\'s search for water and Abraham\'s sacrifice, and offer a sacrifice in his memory.'},
+ {k:'mormon', name:'General Conference', chars:['jesus'], when:d => (d.gm===3 || d.gm===9) && ((d.dow===6 && d.gd<=7) || (d.dow===0 && d.gd>=2 && d.gd<=8)), note:'Twice a year church leaders address members worldwide from Salt Lake City.'},
+ {k:'mormon', name:'Easter', chars:['jesus'], when:d => d.t === d.E, note:'Latter-day Saints keep Easter on the Western date.'},
+ {k:'mormon', name:'Pioneer Day', chars:[], when:d => d.gm===6 && d.gd===24, note:'Marks the 1847 arrival of Mormon pioneers in the Salt Lake Valley.'},
+ {k:'mormon', name:'Christmas', chars:['jesus','mary'], when:d => d.gm===11 && (d.gd===24 || d.gd===25), note:'Christ\'s birth, foretold to the Nephites (Helaman 14).'},
+ {k:'scientology', name:'L. Ron Hubbard\'s birthday', chars:[], when:d => d.gm===2 && d.gd===13, note:'Scientology\'s largest annual event.'},
+ {k:'scientology', name:'Anniversary of Dianetics', chars:['self'], when:d => d.gm===4 && d.gd===9, note:'Dianetics was published on 9 May 1950.'},
+ {k:'scientology', name:'Auditor\'s Day', chars:['self'], when:d => d.gm===8 && d.dow===0 && d.gd>=8 && d.gd<=14, note:'Honors auditors, the practitioners of Scientology\'s counseling.'},
+ {k:'scientology', name:'IAS anniversary', chars:['golden'], when:d => d.gm===9 && d.gd===7, note:'The International Association of Scientologists, founded in 1984.'},
+ {k:'ea', name:'Giving Tuesday', chars:['giving'], when:d => { const n1 = UTC(d.gy,10,1), th = n1 + (((4 - new Date(n1).getUTCDay()) + 7) % 7 + 21)*DAY; return d.t === th + 5*DAY; }, note:'The Tuesday after US Thanksgiving, a global day of giving.'},
+ {k:'ea', name:'Giving season', chars:['giving'], when:d => d.gm===11, note:'Most donations are made in December, and EA groups run matching campaigns.'},
+ {k:'ea', name:'Petrov Day', chars:['end'], when:d => d.gm===8 && d.gd===26, note:'Remembers Stanislav Petrov, who in 1983 judged a Soviet missile alert a false alarm. Marked in parts of the EA and rationalist communities.'},
+ {k:'hinduism', name:'Makar Sankranti', chars:['giving'], list:perYear(Y => [[idxU(Y,0,14), idxU(Y,0,14)]]), note:'The sun turns north. A day for bathing in holy rivers and giving (daan).'},
+ {k:'hinduism', name:'Maha Shivaratri', chars:['self'], list:perYear(Y => { const h = holiOf(Y); if (h === undefined) return []; const n = MOON.NEW.filter(x => x < h).pop(); return n ? [[n-1, n-1]] : []; }), note:'The great night of Shiva, kept with fasting and an all-night vigil.'},
+ {k:'hinduism', name:'Holi', chars:[], list:perYear(Y => { const h = holiOf(Y); return h === undefined ? [] : [[h, h+1]]; }), note:'Bonfires on the full moon, then colors. Spring and the victory of devotion over pride.'},
+ {k:'hinduism', name:'Rama Navami', chars:['golden'], list:perYear(Y => { const n = chaitraNew(Y); return n ? [[n+8, n+8]] : []; }), note:'Rama\'s birthday, nine days into the new year. The Ramayana holds him up as the model of dharma.'},
+ {k:'hinduism', name:'Krishna Janmashtami', chars:['self','rebirth'], list:perYear(Y => MOON.FULL.filter(f => f+8 >= idxU(Y,7,17) && f+8 <= idxU(Y,8,16)).map(f => [f+8, f+8])), note:'Krishna\'s birthday. In the Gita he teaches that the self is never born and never dies (2:20).'},
+ {k:'hinduism', name:'Navaratri', chars:[], list:perYear(Y => inWin(MOON.NEW, Y, 8, 17, 9, 16).map(n => [n+1, n+9])), note:'Nine nights for the goddess Durga.'},
+ {k:'hinduism', name:'Dussehra', chars:['end'], list:perYear(Y => inWin(MOON.NEW, Y, 8, 17, 9, 16).map(n => [n+10, n+10])), note:'Rama defeats Ravana. Effigies of the demon king are burned.'},
+ {k:'hinduism', name:'Diwali', chars:['giving'], list:perYear(Y => inWin(MOON.NEW, Y, 9, 17, 10, 15).map(n => [n-2, n+2])), note:'The festival of lights: Rama\'s return to Ayodhya, and Lakshmi\'s night. Gifts and sweets are shared.'},
+ {k:'hinduism', name:'Gita Jayanti', chars:['self','rebirth'], list:perYear(Y => inWin(MOON.NEW, Y, 10, 16, 11, 15).map(n => [n+11, n+11])), note:'By tradition, the day Krishna spoke the Bhagavad Gita on the battlefield.'},
+ {k:'buddhism', name:'Magha Puja', chars:['golden'], list:perYear(Y => inWin(MOON.FULL, Y, 1, 10, 2, 11).map(f => [f, f])), note:'Remembers the teaching "Do no evil, do good, purify the mind" (Dhammapada 183).'},
+ {k:'buddhism', name:'Vesak', chars:['rebirth','satan'], list:perYear(Y => { const v = vesakOf(Y); return v === undefined ? [] : [[v, v]]; }), note:'The Buddha\'s birth, awakening and passing, kept on one full moon. Under the Bodhi tree he resists Mara and wakes from the cycle of rebirth.'},
+ {k:'buddhism', name:'Asalha Puja', chars:['rebirth'], list:perYear(Y => { const a = asalhaOf(Y); return a === undefined ? [] : [[a, a]]; }), note:'The first sermon: suffering, its cause, and the way out of the cycle.'},
+ {k:'buddhism', name:'Vassa', chars:['giving'], list:perYear(Y => { const a = asalhaOf(Y); if (a === undefined) return []; const e = MOON.FULL.find(f => f > a + 80); return e ? [[a+1, e]] : []; }), note:'The rains retreat. Monastics stay in one place for three months, supported by lay people\'s gifts (dana).'},
+ {k:'buddhism', name:'Bodhi Day', chars:['satan'], list:perYear(Y => [[idxU(Y,11,8), idxU(Y,11,8)]]), note:'The Mahayana day of the Buddha\'s awakening, after he turned away Mara\'s armies and daughters.'}
+];
+const GREET = {'Diwali':'Happy Diwali. ', 'Holi':'Happy Holi. ', 'Krishna Janmashtami':'Jai Shri Krishna. ', 'Vesak':'Happy Vesak. ', 'Rosh Hashanah':'Shanah tovah. ', 'Yom Kippur':'G\'mar chatimah tovah. ', 'Sukkot':'Chag sameach. ', 'Simchat Torah':'Chag sameach. ', 'Passover':'Chag sameach. ', 'Shavuot':'Chag sameach. ',
+  'Christmas':'Merry Christmas. ', 'Easter':'He is risen. ', 'Ramadan':'Ramadan Mubarak. ', 'Hajj and Eid al-Adha':'Eid Mubarak. '};
+const CAL = {days:[], occ:[], years:Object.fromEntries(ALLKEYS.map(k => [k, []])), ok:{torah:false, bible:true, quran:false, mormon:true, scientology:true, ea:true, hinduism:true, buddhism:true}};
+function buildCalTable(){
+  const eCache = {};
+  for (let t = T0, i = 0; t <= T1; t += DAY, i++){
+    const g = new Date(t), gy = g.getUTCFullYear(), hp = parts(fmtH, g), ip = parts(fmtI, g);
+    const d = {i, t, gy, gm:g.getUTCMonth(), gd:g.getUTCDate(), dow:g.getUTCDay(), hm:HMON(hp.month), hmName:hp.month, hd:+hp.day, hy:+hp.year, im:+ip.month, id:+ip.day, iy:+ip.year};
+    d.E = eCache[gy] || (eCache[gy] = easter(gy));
+    CAL.days.push(d);
+  }
+  const d0 = CAL.days[0];
+  CAL.ok.torah = d0.hy > 5000 && d0.hy < 6000; CAL.ok.quran = d0.iy > 1300 && d0.iy < 1600 && d0.im >= 1 && d0.im <= 12;
+  moonPhases();
+  CAL_EVENTS.forEach(ev => {
+    if (!CAL.ok[ev.k]) return;
+    if (ev.list){ ev.list().forEach(([a, b]) => { if (a >= 0 && b < CAL.days.length) CAL.occ.push({ev, s:a, e:b}); }); return; }
+    let cur = null, until = -1;
+    CAL.days.forEach(d => {
+      let on = ev.when ? ev.when(d) : false;
+      if (ev.start && ev.start(d)) until = d.i + ev.len - 1;
+      if (d.i <= until) on = true;
+      if (on){ if (cur && cur.e === d.i - 1) cur.e = d.i; else { cur = {ev, s:d.i, e:d.i}; CAL.occ.push(cur); } }
+    });
+  });
+  CAL.occ.sort((a,b) => a.s - b.s);
+  const jan1 = d => d.gm===0 && d.gd===1, m1 = d => d.gd===1;
+  const starts = {torah:d => d.hm==='tishri' && d.hd===1, quran:d => d.im===1 && d.id===1, bible:d => d.t === advent1(d.gy), mormon:jan1, scientology:jan1, ea:jan1,
+    hinduism:d => YRS.some(Y => { const n = chaitraNew(Y); return n !== undefined && d.i === n; }), buddhism:d => YRS.some(Y => vesakOf(Y) === d.i)};
+  const tick = {mormon:m1, scientology:m1, ea:m1, hinduism:d => MOON.NS.has(d.i), buddhism:d => MOON.FS.has(d.i), torah:d => d.hd===1, quran:d => d.id===1, bible:d => d.t===UTC(d.gy,11,25) || d.t===d.E-46*DAY || d.t===d.E || d.t===d.E+49*DAY};
+  KEYS.forEach(k => {
+    if (!CAL.ok[k]) return;
+    let cur = null;
+    CAL.days.forEach(d => {
+      if (starts[k](d)){ if (cur) cur.len = d.i - cur.s; cur = {s:d.i, len:0, ticks:[]}; CAL.years[k].push(cur); }
+      if (cur && tick[k](d)) cur.ticks.push(d.i - cur.s);
+      d['y_'+k] = cur;
+    });
+    if (cur && !cur.len) cur.len = k==='quran' ? 354 : k==='torah' ? 355 : k==='hinduism' || k==='buddhism' ? 354 : 364;
+    CAL.years[k].forEach(y => y.ticks = y.ticks.map(v => v / y.len));
+  });
+  if (CAL.ok.torah){
+    const st = []; CAL.days.forEach(d => { if (d.hm==='tishri' && d.hd===23) st.push(d.i); });
+    st.forEach((a, j) => {
+      const b = st[j+1] || a + 371, sats = [];
+      for (let i = a+1; i < b && i < CAL.days.length; i++) if (CAL.days[i].dow === 6) sats.push(i);
+      const N = st[j+1] ? sats.length : 51;
+      sats.forEach((si, n) => { const pi = Math.min(52, Math.floor(n*53/N)); for (let i = si-6; i <= si; i++) if (i > a && CAL.days[i]) CAL.days[i].par = pi; });
+    });
+  }
+}
+const nowD = new Date();
+const todayIdx = Math.min(SCRUB1, Math.max(SCRUB0, Math.round((Date.UTC(nowD.getFullYear(), nowD.getMonth(), nowD.getDate()) - T0)/DAY)));
+let simDay = todayIdx, calPlaying = !matchMedia('(prefers-reduced-motion: reduce)').matches, calSpeed = 7, lastDayInt = -1;
+const calLabel = {torah:'', bible:'', quran:''};
+function occI(o, x){ if (x >= o.s && x < o.e + 1) return 1; const dist = x < o.s ? o.s - x : x - (o.e + 1); return Math.max(0, 1 - dist/3); }
+function liturgical(d){
+  const t = d.t, E = d.E, A = advent1(d.gy);
+  if (t >= A && t < UTC(d.gy,11,25)) return `Advent, week ${Math.floor((t-A)/DAY/7)+1}`;
+  if ((d.gm===11 && d.gd>=25) || (d.gm===0 && d.gd<=5)) return 'Christmastide';
+  if (t === E - 46*DAY) return 'Ash Wednesday';
+  if (t > E - 46*DAY && t < E - 7*DAY) return 'Lent';
+  if (t >= E - 7*DAY && t < E - DAY) return t === E - 7*DAY ? 'Palm Sunday' : t === E - 2*DAY ? 'Good Friday' : 'Holy Week';
+  if (t === E - DAY) return 'Holy Saturday';
+  if (t === E) return 'Easter Sunday';
+  if (t === E + 49*DAY) return 'Pentecost';
+  if (t > E && t < E + 49*DAY) return 'Eastertide';
+  return 'Ordinary Time';
+}
+function calMax(c){ return c.act ? Math.max(...KEYS.map(k => c.act[k] || 0)) : 0; }
+
+const TEMPLATES = {
+  devotional:{good:['Reading the story of {name} again tonight. It lands differently every year.','{name} is the lesson I needed this week.','Our study circle finished the {name} passages today.'],
+              bad:['The story of {name} is a warning I keep coming back to.','Taught the kids about {name} today. They had a lot of questions.']},
+  debate:['Is the {name} story meant literally? Genuinely asking.','Three traditions tell {name}\'s story with different details. Which ones matter?','Hot take: {name} is the most misread figure in scripture.','Why does {name} get a different ending depending on which book you open?'],
+  humor:['{name} energy is what this Monday requires.','Someone made a {name} meme and honestly it\'s decent theology.','My group chat explaining {name} at 2am.'],
+  news:['Museum opens an exhibit of manuscripts telling the {name} story.','New translation changes a key line about {name}.','Documentary on {name} tops streaming charts this week.'],
+  study:['Comparing {name} in the Torah, the Bible and the Quran: same arc, different emphasis.','Thread: every place {name} is named, in three languages.']
+};
+const TONES = [['devotional',4],['debate',2.5],['humor',2],['news',1],['study',1.5]];
+
+// ---------- DOM ----------
+const field = document.getElementById('field');
+const art = document.getElementById('art'), ui = document.getElementById('ui');
+const actx = art.getContext('2d'), uctx = ui.getContext('2d');
+const charSel = document.getElementById('charSel');
+const feedEl = document.getElementById('feed');
+const termsEl = document.getElementById('terms');
+const termNote = document.getElementById('termNote');
+const eventBadge = document.getElementById('eventBadge');
+const playBtn = document.getElementById('playBtn');
+const rateIn = document.getElementById('rate');
+const layerInk = document.getElementById('layerInk'), layerChat = document.getElementById('layerChat'), layerLeaders = document.getElementById('layerLeaders');
+
+let W=0, H=0, DPR=1, anchors={}, anchorBase={}, dialR=26, colors={}, bgRGB=[0,0,0], dark=false;
+let selected = byId.moses, hovered = null, activeTerm = null;
+let running = true, particles = {}, sparks = [], ripples = [];
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---------- design settings ----------
+const DEFAULTS = {texts:{torah:true, bible:true, quran:true, mormon:true, scientology:true, ea:true, hinduism:true, buddhism:true}, posts:'rain', feed:'live', liveText:true, ideaShape:'diamond', ideaColor:'blend', ideaHex:'#e9dcb6', ideas:true, textNames:true, dials:true, inkSize:1, cal:true, calPull:1, shape:'planets', labels:'en', size:1, palette:'pigment', colors:null, chatter:null, bg:'theme', ink:'dots', trail:.7, density:1, roles:true};
+const PALETTES = {
+  pigment:{label:'Pigment', c:null},
+  jewel:{label:'Jewel', c:{torah:'#4a6cf7', bible:'#d81b60', quran:'#f0a202', mormon:'#0fa3a3', scientology:'#7b3fe4', ea:'#2fa84f', hinduism:'#e0457b', buddhism:'#ff7f11'}},
+  nebula:{label:'Nebula', c:{torah:'#8a63ff', bible:'#ff4fa3', quran:'#33d1e6', mormon:'#5ef2a8', scientology:'#ffd36e', ea:'#ff8a5b', hinduism:'#ff6ad5', buddhism:'#9bff6e'}},
+  ember:{label:'Ember', c:{torah:'#ff7a1a', bible:'#e5383b', quran:'#ffd166', mormon:'#ff9f68', scientology:'#b23a48', ea:'#ffe8a3', hinduism:'#ff5e78', buddhism:'#ffa94d'}},
+  dusk:{label:'Dusk', c:{torah:'#6d8fc4', bible:'#c07a9a', quran:'#d2b07a', mormon:'#7aa89a', scientology:'#9a86b8', ea:'#a8b878', hinduism:'#c48b9f', buddhism:'#c9935c'}},
+  mono:{label:'Mono', c:{torah:'#6c7a96', bible:'#a3acbd', quran:'#d6dae3', mormon:'#8790a3', scientology:'#b9c0cd', ea:'#eef0f4', hinduism:'#7a8294', buddhism:'#dde1e8'}}
+};
+const BGS = {
+  night:{bg:'#06070b', fg:'#e6e8ee', muted:'#8b92a3', panel:'#12141b'},
+  paper:{bg:'#e6e4de', fg:'#1d1f24', muted:'#5d606a', panel:'#f3f2ee'},
+  space:{bg:'#02030a', fg:'#dfe4f2', muted:'#7d86a0', panel:'#0d1020'}
+};
+const STORE = 'ink-chatter-design-v1';
+let S = JSON.parse(JSON.stringify(DEFAULTS));
+try { const saved = JSON.parse(localStorage.getItem(STORE) || 'null'); if (saved){ S = Object.assign(S, saved); S.texts = Object.assign(JSON.parse(JSON.stringify(DEFAULTS.texts)), saved.texts || {}); } } catch(e) {}
+function saveS(){ try { localStorage.setItem(STORE, JSON.stringify(S)); } catch(e) {} }
+let stars = [];
+function hexRGB(h){ h = (h||'#000').trim().replace('#',''); if (h.length===3) h = h.split('').map(x=>x+x).join(''); return [0,2,4].map(i => parseInt(h.substr(i,2),16) || 0); }
+function rgb(a, al){ return `rgba(${a[0]|0},${a[1]|0},${a[2]|0},${al===undefined?1:al})`; }
+function shade(a, f){ return f > 0 ? a.map(v => v + (255-v)*f) : a.map(v => v*(1+f)); }
+function toHex(a){ return '#' + a.map(v => Math.max(0,Math.min(255,v|0)).toString(16).padStart(2,'0')).join(''); }
+function mixColor(c){
+  let r=0,g=0,b=0,t=0;
+  KEYS.forEach(k => { let w = c.rate[k] || ((c.u && c.u[k]) ? c.total*.08 : 0); if (!w) return; w = Math.sqrt(w);
+    const q = hexRGB(colors[k]); r += q[0]*w; g += q[1]*w; b += q[2]*w; t += w; });
+  return [r/t, g/t, b/t];
+}
+function applyPalette(){
+  const st = document.documentElement.style;
+  const pal = S.colors || (PALETTES[S.palette] || {}).c;
+  ALLKEYS.forEach(k => pal && pal[k] ? st.setProperty('--'+k, pal[k]) : st.removeProperty('--'+k));
+  S.chatter ? st.setProperty('--spark', S.chatter) : st.removeProperty('--spark');
+}
+function recomputeActive(){
+  KEYS.length = 0; ALLKEYS.forEach(k => { if (S.texts[k]) KEYS.push(k); });
+  if (!KEYS.length){ S.texts.torah = true; KEYS.push('torah'); }
+  ALLC.forEach(c => c.total = KEYS.reduce((s,k) => s + c.rate[k], 0));
+  C.length = 0; ALLC.forEach(c => { if (c.total > 0 && (!c.idea || S.ideas)) C.push(c); });
+  maxRate = Math.max(...C.flatMap(c => KEYS.map(k => c.rate[k])));
+  if (!C.includes(selected)) selected = C[0];
+  charSel.replaceChildren(...C.map(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = c.en + (c.idea ? ' (idea)' : ''); return o; }));
+}
+function fadeAmt(){ return Math.max(.025, .4 - S.trail*.42); }
+const PICK = {torah:'colTorah', bible:'colBible', quran:'colQuran', mormon:'colMormon', scientology:'colScientology', ea:'colEa', hinduism:'colHinduism', buddhism:'colBuddhism'};
+function setOpt(key, v){ S[key] = v; if (key === 'palette') S.colors = null; commit(key); }
+function commit(key){
+  saveS(); applyPalette();
+  if (key === 'texts' || key === 'reset') recomputeActive();
+  if (key === 'shape' || key === 'size' || key === 'reset' || key === 'cal' || key === 'texts') layout();
+  else { readColors(); if (key === 'density' || key === 'roles') buildParticles(W < 560); }
+  renderDetail(); syncBoard();
+  if (!running) warm(40);
+}
+function syncOutputs(){
+  document.getElementById('optSizeOut').textContent = (+S.size).toFixed(2) + '×';
+  document.getElementById('optTrailOut').textContent = Math.round(S.trail*100) + '%';
+  document.getElementById('optDensityOut').textContent = (+S.density).toFixed(1) + '×';
+  document.getElementById('optInkOut').textContent = (+S.inkSize).toFixed(1) + '×';
+  document.getElementById('optCalPullOut').textContent = (+S.calPull).toFixed(1) + '×';
+}
+function syncBoard(){
+  document.querySelectorAll('.seg[data-key] button').forEach(b => b.setAttribute('aria-pressed', String(S[b.parentElement.dataset.key] === b.dataset.v)));
+  document.querySelectorAll('#swatches .sw').forEach(b => b.setAttribute('aria-pressed', String(S.palette === b.dataset.v)));
+  ALLKEYS.forEach(k => document.getElementById(PICK[k]).value = toHex(hexRGB(colors[k])));
+  document.getElementById('colChat').value = toHex(hexRGB(colors.spark));
+  document.getElementById('optSize').value = S.size;
+  document.getElementById('optTrail').value = S.trail;
+  document.getElementById('optDensity').value = S.density;
+  document.getElementById('optRoles').checked = !!S.roles;
+  document.getElementById('optCal').checked = !!S.cal;
+  ALLKEYS.forEach(k => { const el = document.getElementById('txt-'+k); if (el) el.checked = !!S.texts[k]; });
+  document.getElementById('optIdeas').checked = !!S.ideas;
+  document.getElementById('optLiveText').checked = !!S.liveText;
+  document.getElementById('optIdeaHex').value = S.ideaHex;
+  document.getElementById('feedSrc').value = S.feed;
+  document.getElementById('optTextNames').checked = !!S.textNames;
+  document.getElementById('optDials').checked = !!S.dials;
+  document.getElementById('optInk').value = S.inkSize;
+  document.getElementById('optCalPull').value = S.calPull;
+  const cs = document.getElementById('calStrip'); if (cs) cs.hidden = !S.cal;
+  syncOutputs();
+}
+function showTab(which){
+  [['tabInfo','paneInfo'],['tabDesign','paneDesign']].forEach(([t,p]) => {
+    const on = t === which; document.getElementById(t).setAttribute('aria-selected', String(on)); document.getElementById(p).hidden = !on; });
+}
+function buildBoard(){
+  const sw = document.getElementById('swatches');
+  Object.entries(PALETTES).forEach(([id,p]) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'sw'; b.dataset.v = id;
+    const cs = p.c || {torah:'#5b8dff', bible:'#ff5b4f', quran:'#f2b431', mormon:'#3cc7b8', scientology:'#a985ff', ea:'#a6d64a', hinduism:'#ff6fb0', buddhism:'#ff9a3c'};
+    b.innerHTML = `<span class="dots">${ALLKEYS.map(k => `<i style="background:${cs[k]}"></i>`).join('')}</span><span>${p.label}</span>`;
+    b.addEventListener('click', () => setOpt('palette', id));
+    sw.appendChild(b);
+  });
+  document.querySelectorAll('.seg[data-key] button').forEach(b => b.addEventListener('click', () => setOpt(b.parentElement.dataset.key, b.dataset.v)));
+  ALLKEYS.forEach(k => document.getElementById(PICK[k]).addEventListener('input', () => {
+    S.colors = {}; ALLKEYS.forEach(j => S.colors[j] = document.getElementById(PICK[j]).value); S.palette = 'custom'; commit('palette');
+  }));
+  document.getElementById('colChat').addEventListener('input', e => { S.chatter = e.target.value; commit('chatter'); });
+  [['optSize','size'],['optTrail','trail'],['optDensity','density']].forEach(([id,key]) => {
+    const el = document.getElementById(id);
+    el.addEventListener('input', () => { S[key] = +el.value; syncOutputs(); if (key === 'trail') saveS(); });
+    el.addEventListener('change', () => { S[key] = +el.value; commit(key); });
+  });
+  document.getElementById('optRoles').addEventListener('change', e => { S.roles = e.target.checked; commit('roles'); });
+  document.getElementById('optCal').addEventListener('change', e => { S.cal = e.target.checked; commit('cal'); });
+  const tt = document.getElementById('textToggles');
+  ALLKEYS.forEach(k => {
+    const l = document.createElement('label'), cb = document.createElement('input'); cb.type = 'checkbox'; cb.id = 'txt-'+k;
+    const dot = document.createElement('i'); dot.className = 'dot'; dot.style.background = `var(--${k})`;
+    l.htmlFor = cb.id; l.append(cb, dot, document.createTextNode(CORPUS[k].label)); tt.appendChild(l);
+    cb.addEventListener('change', () => { S.texts[k] = cb.checked; if (!ALLKEYS.some(j => S.texts[j])){ S.texts[k] = true; cb.checked = true; return; } commit('texts'); });
+  });
+  document.getElementById('optLiveText').addEventListener('change', e => { S.liveText = e.target.checked; saveS(); });
+  document.getElementById('optIdeaHex').addEventListener('input', e => { S.ideaHex = e.target.value; S.ideaColor = 'single'; commit('names'); });
+  document.getElementById('optIdeas').addEventListener('change', e => { S.ideas = e.target.checked; commit('texts'); });
+  document.getElementById('optTextNames').addEventListener('change', e => { S.textNames = e.target.checked; commit('names'); });
+  document.getElementById('optDials').addEventListener('change', e => { S.dials = e.target.checked; commit('names'); });
+  const ink = document.getElementById('optInk');
+  ink.addEventListener('input', () => { S.inkSize = +ink.value; syncOutputs(); saveS(); });
+  const cp = document.getElementById('optCalPull');
+  cp.addEventListener('input', () => { S.calPull = +cp.value; syncOutputs(); saveS(); });
+  document.getElementById('resetSettings').addEventListener('click', () => { S = JSON.parse(JSON.stringify(DEFAULTS)); commit('reset');
+    document.getElementById('boardStat').textContent = 'Reset to the starting look.'; });
+  document.getElementById('copySettings').addEventListener('click', () => {
+    const json = JSON.stringify(S, null, 1), out = document.getElementById('settingsOut'), st = document.getElementById('boardStat');
+    out.value = json;
+    const fallback = () => { out.hidden = false; out.focus(); out.select(); st.textContent = 'Select the settings below, copy them, and paste them into our chat.'; };
+    try { navigator.clipboard.writeText(json).then(() => { st.textContent = 'Copied. Paste the settings into our chat and I can make them the default.'; }, fallback); }
+    catch(e){ fallback(); }
+  });
+  document.getElementById('tabInfo').addEventListener('click', () => showTab('tabInfo'));
+  document.getElementById('tabDesign').addEventListener('click', () => showTab('tabDesign'));
+  document.getElementById('designBtn').addEventListener('click', () => { showTab('tabDesign'); document.getElementById('aside').scrollIntoView({behavior: reduceMotion ? 'auto' : 'smooth', block:'nearest'}); });
+  syncBoard();
+}
+
+function readColors(){
+  const cs = getComputedStyle(document.documentElement);
+  ['bg','panel','fg','muted','line','spark', ...ALLKEYS].forEach(k => colors[k] = cs.getPropertyValue('--'+k).trim());
+  const B = BGS[S.bg];
+  if (B){ Object.assign(colors, B); if (!S.chatter) colors.spark = B.fg; }
+  field.style.background = colors.bg;
+  bgRGB = hexRGB(colors.bg);
+  dark = (bgRGB[0]+bgRGB[1]+bgRGB[2]) / 3 < 128;
+  actx.fillStyle = colors.bg; actx.fillRect(0,0,W,H);
+}
+
+// ---------- layout ----------
+function layout(){
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  W = field.clientWidth; H = field.clientHeight;
+  [art,ui].forEach(cv => { cv.width = W*DPR; cv.height = H*DPR; });
+  actx.setTransform(DPR,0,0,DPR,0,0); uctx.setTransform(DPR,0,0,DPR,0,0);
+  const narrow = W < 560;
+  dialR = Math.max(16, Math.min(30, Math.min(W,H)*.04));
+  const topY = Math.max(H*.13, S.cal ? dialR + (narrow ? 44 : 76) : 60);
+  const botY = Math.min(H*(narrow?.88:.89), H - (S.cal ? dialR + (narrow ? 40 : 58) : 40));
+  anchorBase = {
+    torah:{x:W*(narrow?.15:.13), y:topY}, bible:{x:W*(narrow?.85:.87), y:topY}, quran:{x:W*.5, y:botY},
+    ea:{x:W*.5, y:topY}, mormon:{x:W*(narrow?.87:.88), y:H*.62}, scientology:{x:W*(narrow?.13:.11), y:H*.62},
+    hinduism:{x:W*(narrow?.2:.22), y:botY}, buddhism:{x:W*(narrow?.8:.78), y:botY}
+  };
+  anchors = {}; ALLKEYS.forEach(k => anchors[k] = {...anchorBase[k]});
+  const s = Math.min(W,H) / 760;
+  C.forEach(c => {
+    let sx=0, sy=0, sw=0;
+    KEYS.forEach(k => {
+      let w = c.rate[k] > 0 ? Math.pow(c.rate[k], .55) : (c.u && c.u[k] ? .35 : 0);
+      sx += w*anchorBase[k].x; sy += w*anchorBase[k].y; sw += w;
+    });
+    c.tx = sx/sw; c.ty = sy/sw;
+    // ease toward the middle so nobody sits on top of an anchor label
+    const cx = W*.5, cy = H*.42;
+    c.tx += (cx - c.tx)*.08; c.ty += (cy - c.ty)*.08;
+    c.x = c.tx; c.y = c.ty;
+    c.r = Math.max(5, (5 + Math.sqrt(c.total)*1.7) * Math.max(.7, s)) * S.size;
+  });
+  // relax overlaps, springs back to target
+  const gap = (narrow ? 18 : 30) + (S.shape === 'planets' ? (narrow ? 10 : 18) : 0);
+  for (let it=0; it<750; it++){
+    const spring = it < 600 ? .008 : 0;
+    for (let i=0;i<C.length;i++) for (let j=i+1;j<C.length;j++){
+      const a=C[i], b=C[j]; let dx=(b.x-a.x)*.62, dy=b.y-a.y; let d=Math.hypot(dx,dy)||.01;
+      const min = a.r + b.r + gap;
+      if (d < min){ const p=(min-d)/2/d; dx*=p/.62; dy*=p; a.x-=dx; a.y-=dy; b.x+=dx; b.y+=dy; }
+    }
+    C.forEach(c => { c.x += (c.tx-c.x)*spring; c.y += (c.ty-c.y)*spring;
+      c.x = Math.max(c.r+30, Math.min(W-c.r-30, c.x)); c.y = Math.max(c.r+60, Math.min(H-c.r-70, c.y)); });
+  }
+  C.forEach(c => { c.hx = c.x; c.hy = c.y; c.ox = c.ox || 0; c.oy = c.oy || 0; });
+  buildParticles(narrow);
+  stars = Array.from({length: Math.round(W*H/4200)}, () => ({x:Math.random()*W, y:Math.random()*H, r:Math.random()*1.3+.3, a:Math.random()*.6+.15, ph:Math.random()*6.28}));
+  readColors();
+}
+
+function buildParticles(narrow){
+  particles = Object.fromEntries(ALLKEYS.map(k => [k, []]));
+  const K = (narrow ? 8 : 13) * S.density;
+  C.forEach(c => KEYS.forEach(k => {
+    const rate = c.rate[k];
+    if (rate <= 0) return;
+    const n = Math.max(6, Math.round(Math.sqrt(rate)*K));
+    for (let i=0;i<n;i++){
+      const stream = Math.random() < .28;
+      particles[k].push({c, k, stream,
+        t:Math.random(), sp:.002 + Math.random()*.004, bend:(Math.random()-.5)*.5,
+        ang:Math.random()*Math.PI*2, av:(.004+Math.random()*.012)*(motionRole(c,k)==='ad'?-1.6:1),
+        base:1.2 + Math.random()*1.5, ph:Math.random()*6.28});
+    }
+  }));
+}
+
+// ---------- chatter ----------
+function pickWeighted(items, wfn){
+  const tot = items.reduce((s,x)=>s+wfn(x),0); let r = Math.random()*tot;
+  for (const x of items){ r -= wfn(x); if (r <= 0) return x; } return items[items.length-1];
+}
+function spawnPost(now){
+  const boost = c => ((activeEvent && activeEvent.ids.includes(c.id)) ? 14 : 1) * (1 + 6*calMax(c));
+  const c = pickWeighted(C, x => x.buzz * boost(x));
+  const tone = pickWeighted(TONES, t => t[1])[0];
+  const forms = [c.en, c.heTr, c.arTr.split(' (')[0].split(' / ')[0]];
+  const name = c.idea ? c.en.toLowerCase() : Math.random() < .55 ? c.en : forms[1 + (Math.random()*2|0)];
+  let text, term = null;
+  const myTerms = TERMS.filter(t => t.chars.includes(c.id));
+  if (myTerms.length && Math.random() < .22){
+    term = myTerms[Math.random()*myTerms.length|0];
+    text = `The word for "${term.en}" in the ${name} story: ${term.heTr} in Hebrew, ${term.arTr} in Arabic. Same root.`;
+  } else if (c.idea){ text = IDEA_TPL[Math.random()*IDEA_TPL.length|0].replace('{name}', name);
+  } else {
+    let pool = TEMPLATES[tone];
+    if (tone === 'devotional') pool = (c.role==='ad'||c.role==='tr') ? pool.bad : pool.good;
+    text = pool[Math.random()*pool.length|0].replace('{name}', name);
+  }
+  c.mentions++;
+  if (term){ term.count++; pulseTerm(term); }
+  addFeed({tone, text, name, c});
+  launchSpark(c, {jag: tone === 'debate'});
+  if (c === selected) renderStat();
+}
+function launchSpark(c, extra){
+  if (sparks.length > 260) sparks.shift();
+  const e = Math.random()*4|0, u = Math.random();
+  const sx = e===0 ? u*W : e===1 ? W : e===2 ? u*W : 0;
+  const sy = e===0 ? 0 : e===1 ? u*H : e===2 ? H : u*H;
+  sparks.push(Object.assign({dx0: -(c.y + 12)*.22 + (Math.random() - .5)*24, sx, sy, c, t:0, sp:.007 + Math.random()*.006, cx: W*(.2+Math.random()*.6), cy: H*(.2+Math.random()*.6)}, extra));
+}
+const IDEA_TPL = ['Thread: {name} across traditions.', 'Is {name} the one idea every tradition shares?', 'Our reading group is on {name} this week.', 'Podcast episode: where {name} came from.'];
+const PROPHETS = new Set(['adam','noah','abraham','lot','ishmael','isaac','jacob','joseph','moses','aaron','david','solomon','job','jonah','elijah','john','jesus','gabriel']);
+const LEADERS = {
+  torah:{w:1, voices:['Rabbi','Reform rabbi','Orthodox rabbi'],
+    ev:'{greet}On {ev}, we return to {name}.', par:'This week\'s portion, {par}, brings us back to {name}. Shabbat shalom.',
+    good:['{name}\'s story asks what we owe one another.', 'Torah study tonight: the {name} narrative, line by line with Rashi.', 'Our sages read {name}\'s silences as closely as the words.'],
+    bad:['The story of {name} is a warning about the hardened heart.', 'Even {name}\'s story is Torah. We read it so we don\'t repeat it.']},
+  bible:{w:1.4, voices:['Catholic bishop','Pastor','Orthodox priest','Anglican vicar'],
+    ev:'{greet}This {ev}, we turn to {name}.',
+    good:['Today\'s reading turns to {name}. Where do we see ourselves in this story?', 'Like {name}, we are called to trust. Praying for all who suffer today.', 'This Sunday we continue our series on {name}.'],
+    bad:['Scripture doesn\'t hide {name}, and we shouldn\'t hide from our own temptations.', 'The story of {name} is a warning we still need.']},
+  quran:{w:1, voices:['Sunni imam','Shia cleric','Mosque scholar'],
+    ev:'{greet}On {ev}, we remember {name}.',
+    good:['The Quran tells of {name} as a lesson in patience and trust in God.', 'Reflection after Jumu\'ah: the story of {name}.', '{name}, {pbuh}, is honored in the Quran.'],
+    bad:['The Quran tells of {name} as a warning to the arrogant.', 'Seek refuge in God from what {name} stands for.']},
+  mormon:{w:.6, voices:['Latter-day Saint leader','Stake president'],
+    ev:'{greet}At {ev}, we bear witness of {name}.',
+    good:['The Book of Mormon testifies of {name}.', 'Studying {name} in Come, Follow Me this week.'],
+    special:{jesus:'The Book of Mormon is another testament of Jesus Christ.'},
+    bad:['The Book of Mormon warns that {name} seeks the misery of all mankind.']},
+  scientology:{w:.35, voices:['Scientology minister'],
+    ev:'{ev}: this week\'s theme is {name}.', good:['Our Sunday service this week: {name}.'],
+    special:{golden:'"Try to treat others as you would want them to treat you." From The Way to Happiness.', self:'You are a spiritual being, not a body. That is where our study begins.'}, bad:[]},
+  hinduism:{w:.8, voices:['Hindu priest','Swami','Temple scholar'],
+    ev:'{greet}On {ev}, we reflect on {name}.', good:['Tonight\'s satsang: {name}, through the Gita.', 'A verse a day: what the Gita says about {name}.'],
+    special:{self:'You are not the body. "It is not born, nor does it ever die" (Gita 2:20).', rebirth:'"As we put on new clothes, the self takes on new bodies." Gita 2:22 for today.', giving:'Give without expecting anything back. That is sattvic dana.', golden:'Do not do to others what would hurt you. Mahabharata 13.114.8.'}, bad:[]},
+  buddhism:{w:.7, voices:['Buddhist monk','Zen teacher','Meditation teacher'],
+    ev:'{greet}On {ev}, we reflect on {name}.', good:['Dharma talk this evening: {name}.', 'Sitting with {name} today.'],
+    special:{self:'There is no fixed self to defend. Breathe, and look for it.', rebirth:'The wheel keeps turning until we wake up.', giving:'Generosity is where practice begins.', golden:'"Putting oneself in the place of another, one should not harm." Dhammapada 129.'}, bad:[]},
+  ea:{w:.45, voices:['EA researcher','EA organizer'],
+    ev:'{ev}: a reminder about {name}.', good:['New forum post on {name}, with numbers.'],
+    special:{giving:'Tithing and zakat got to giving a tenth long before we did.', end:'Updated estimates on existential risk are out. The Precipice still holds up.', golden:'Distance doesn\'t change what we owe a stranger. Singer\'s drowning child, fifty years on.'}, bad:[]}
+};
+function spawnLeaderPost(){
+  const keys = KEYS.filter(k => LEADERS[k]);
+  const k = pickWeighted(keys, k => LEADERS[k].w * (1 + 3*Math.max(0, ...C.map(c => (c.act && c.act[k]) || 0))));
+  const L = LEADERS[k], pool = C.filter(c => c.rate[k] > 0);
+  if (!pool.length) return;
+  const c = pickWeighted(pool, c => Math.sqrt(c.rate[k]) * (1 + 8*((c.act && c.act[k]) || 0)));
+  const name = k === 'quran' && !c.idea ? c.arTr.split(' (')[0].split(' / ')[0] : c.en;
+  const di = Math.floor(simDay), d = CAL.days[di];
+  const occ = S.cal && CAL.occ.find(o => o.ev.k === k && di >= o.s && di <= o.e && o.ev.chars.includes(c.id));
+  const bad = c.role === 'ad' || c.role === 'tr';
+  let text;
+  if (occ) text = L.ev.replace('{greet}', GREET[occ.ev.name] || '').replace('{ev}', occ.ev.name);
+  else if (k === 'torah' && d && d.par !== undefined && PARASHOT[d.par][1].includes(c.id)) text = L.par.replace('{par}', PARASHOT[d.par][0]);
+  else if (L.special && L.special[c.id] && Math.random() < .7) text = L.special[c.id];
+  else {
+    let opts = bad && L.bad.length ? L.bad : L.good;
+    if (k === 'quran') opts = opts.filter(t => !t.includes('{pbuh}') || PROPHETS.has(c.id) || c.id === 'mary');
+    text = opts[Math.random()*opts.length|0];
+  }
+  text = text.replace('{name}', c.idea ? c.en.toLowerCase() : name).replace('{pbuh}', c.id === 'mary' ? 'peace be upon her' : 'peace be upon him');
+  text = text.charAt(0).toUpperCase() + text.slice(1);
+  c.mentions++;
+  addFeed({tone:L.voices[Math.random()*L.voices.length|0], text, name:c.en, c, leader:k});
+  launchSpark(c, {leader:k, sp:.005 + Math.random()*.004});
+  if (c === selected) renderStat();
+}
+function addFeed(p){
+  const li = document.createElement('li');
+  const tone = document.createElement('span'); tone.className='tone'; tone.textContent = p.tone;
+  if (p.leader){ li.className = 'leader'; tone.style.color = `var(--${p.leader})`; }
+  const body = document.createElement('span');
+  body.className = 'body'; body.textContent = p.text;
+  if (!p.c.idea && !String(p.c.id || '').startsWith('@') && p.name.toLowerCase() !== p.c.en.toLowerCase()){ const to = document.createElement('span'); to.className='to'; to.textContent = `${p.name} → ${p.c.en}`; body.appendChild(to); }
+  if (p.url){ const a = document.createElement('a'); a.href = p.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = 'Open on Bluesky'; body.appendChild(document.createElement('br')); body.appendChild(a); }
+  li.append(tone, body);
+  feedEl.prepend(li);
+  while (feedEl.children.length > 7) feedEl.lastChild.remove();
+}
+
+// ---------- live feed: Bluesky posts that name the figures ----------
+const JET = ['wss://jetstream2.us-east.bsky.network', 'wss://jetstream1.us-east.bsky.network', 'wss://jetstream1.us-west.bsky.network', 'wss://jetstream2.us-west.bsky.network'];
+const LB = '(?<![\\p{L}\\p{M}\\p{N}_])', LE = '(?![\\p{L}\\p{M}\\p{N}_])';
+const AR_PRE = '(?:[وفبلك])?', HE_PRE = '(?:[והבלמשכ])?';
+const escRx = x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function mkRx(f, ar, he){
+  const parts = [];
+  if (f && f.length) parts.push('(?:' + f.map(escRx).join('|') + ')');
+  if (ar && ar.length) parts.push(AR_PRE + '(?:' + ar.map(escRx).join('|') + ')');
+  if (he && he.length) parts.push(HE_PRE + '(?:' + he.map(escRx).join('|') + ')');
+  return new RegExp(LB + '(?:' + parts.join('|') + ')' + LE, 'iu');
+}
+// Name forms per figure. strict: only counts with a religious word nearby.
+const FORMS = {
+  adam:{f:['Adam and Eve','Adam'], ar:['آدم'], he:['אדם הראשון'], strict:true},
+  eve:{f:['Eve','Hawwa','Chava'], ar:['حواء'], he:['חוה'], strict:true, neg:/christmas eve|new year'?s eve|\beve of\b|on the eve|halloween/i},
+  cain:{f:['Cain','Kayin','Qabil'], strict:true},
+  noah:{f:["Noah's ark",'Noah','Noach','Nuh','Noé'], ar:['نوح'], strict:true},
+  abraham:{f:['Abraham','Avraham','Ibrahim','Abram','Abraão'], ar:['إبراهيم','ابراهيم'], he:['אברהם'], strict:true, neg:/lincoln|accords/i},
+  lot:{f:["Lot's wife",'Prophet Lot','Prophet Lut'], ar:['لوط'], strict:true},
+  ishmael:{f:['Ishmael','Ismail',"Isma'il",'Yishmael'], ar:['إسماعيل','اسماعيل'], he:['ישמעאל'], strict:true, neg:/call me ishmael/i},
+  isaac:{f:['Isaac','Yitzchak','Yitzhak','Ishaq'], ar:['إسحاق','اسحاق'], he:['יצחק'], strict:true, neg:/newton|asimov|hayes/i},
+  jacob:{f:['Jacob','Yaakov',"Ya'qub",'Yaqub'], ar:['يعقوب'], he:['יעקב'], strict:true},
+  joseph:{f:['Joseph','Yosef','Yusuf'], ar:['يوسف'], he:['יוסף'], strict:true, neg:/smith|stalin|gordon-levitt/i},
+  moses:{f:['Moses','Moshe','Musa','Moïse','Moisés','Mosè'], ar:['موسى'], he:['משה רבנו','משה'], strict:false},
+  aaron:{f:['Aaron','Aharon','Harun'], ar:['هارون'], he:['אהרן','אהרון'], strict:true, neg:/rodgers|judge|paul/i},
+  pharaoh:{f:['Pharaoh','Pharaohs',"Fir'awn",'Firaun','Faraón','Pharaon'], ar:['فرعون'], he:['פרעה'], strict:false},
+  david:{f:['King David','David','Dawud','Dawood'], ar:['داود'], he:['דוד המלך'], strict:true},
+  solomon:{f:['King Solomon','Solomon','Sulayman','Shlomo','Salomón'], ar:['سليمان'], strict:true},
+  job:{f:['Book of Job','patience of Job','Ayyub'], ar:['أيوب'], he:['איוב'], strict:true},
+  jonah:{f:['Jonah','Yunus','Yonah'], ar:['يونس'], he:['יונה הנביא'], strict:true},
+  elijah:{f:['Elijah','Eliyahu','Ilyas'], ar:['إلياس'], he:['אליהו הנביא'], strict:true},
+  john:{f:['John the Baptist','Yahya','Juan el Bautista','Jean-Baptiste','João Batista'], ar:['يحيى'], strict:true},
+  mary:{f:['Virgin Mary','Mother Mary','Blessed Virgin','Our Lady','Maryam','Mary','Virgen María','Vierge Marie'], ar:['مريم'], strict:true},
+  jesus:{f:['Jesus','Christ','Yeshua','Jesús','Jésus','Gesù','Jesucristo'], ar:['عيسى','المسيح'], he:['ישוע','ישו'], strict:false},
+  gabriel:{f:['Angel Gabriel','Archangel Gabriel','Gabriel','Jibril','Jibreel'], ar:['جبريل'], strict:true},
+  satan:{f:['Satan','Shaytan','Iblis','Lucifer','the devil','Satanás'], ar:['الشيطان','إبليس'], he:['השטן'], strict:false},
+  giving:{f:['tithe','tithes','tithing','zakat','zakah','sadaqah','tzedakah','Giving What We Can','GivingTuesday','Giving Tuesday','10% pledge'], ar:['زكاة','صدقة'], he:['צדקה','מעשר'], strict:false},
+  self:{f:['immortal soul','thetan','atman','anatta','nefesh','the soul'], ar:['الروح'], he:['נשמה'], strict:true},
+  end:{f:['apocalypse','end times','Armageddon','Judgment Day','Judgement Day','Day of Judgment','the rapture','existential risk','x-risk','Qiyamah','Kali Yuga'], ar:['يوم القيامة'], strict:false},
+  golden:{f:['golden rule','love your neighbor','love your neighbour','love thy neighbor','love thy neighbour','do unto others'], strict:false},
+  rebirth:{f:['reincarnation','reincarnated','rebirth','samsara','past life','past lives','karma'], strict:true}
+};
+const TEXTREF = {
+  torah:{f:['Torah','Tanakh','Chumash','Pentateuch','parashah','parsha'], he:['תורה','תנ"ך','פרשת']},
+  bible:{f:['Bible','Bible verse','New Testament','Gospel','Gospels','scripture','Biblia','Bibel'], he:['הברית החדשה'], ar:['الإنجيل']},
+  quran:{f:['Quran','Koran',"Qur'an",'Qur’an','surah','Al-Quran'], ar:['القرآن','قرآن','سورة']},
+  mormon:{f:['Book of Mormon','Mormon','Mormons','Latter-day Saint','Latter-day Saints','LDS']},
+  scientology:{f:['Scientology','Scientologist','Scientologists','Dianetics','L. Ron Hubbard']},
+  ea:{f:['effective altruism','effective altruist','effective altruists','GiveWell','80,000 Hours','EA Forum','longtermism']},
+  hinduism:{f:['Hindu','Hinduism','Hindus','Bhagavad Gita','Gita','Vedas','Upanishads','Ramayana','Mahabharata','Sanatan Dharma','Diwali'], ar:[], he:[]},
+  buddhism:{f:['Buddha','Buddhism','Buddhist','Buddhists','Dhammapada','Dhamma','sutra','sutras','nirvana','Vesak','bodhisattva']}
+};
+const CTX = mkRx(['bible','biblical','scripture','scriptures','torah','tanakh','talmud','midrash','gospel','gospels','genesis','exodus','deuteronomy','psalm','psalms','proverbs','prophet','prophets','prophecy','quran','koran',"qur'an",'surah','ayah','hadith','allah','god','lord','church','synagogue','mosque','temple','rabbi','pastor','priest','imam','sermon','faith','pray','prayer','praying','holy','sacred','testament','apostle','disciples','angel','angels','heaven','hell','sin','sins','verse','verses','parable','messiah','salvation','sabbath','shabbat','ramadan','eid','passover','pesach','easter','christmas','advent','lent','hanukkah','yom kippur','rosh hashanah','catholic','christian','christians','muslim','muslims','jewish','jews','judaism','islam','christianity','mormon','lds','hindu','buddhist','buddha','dharma','gita','amen','hallelujah','inshallah','alhamdulillah','bismillah','ark','covenant','flood','plague','plagues','commandments','sinai','israelites','nativity','resurrection','crucifixion','baptism','baptized','spiritual','soul','religion','religious','theology','clergy','dios','dieu','gott','deus'],
+  ['الله','القرآن','سورة','نبي','النبي','رسول','آية','الإسلام','المسجد','التوراة','الإنجيل'], ['תורה','אלוהים','שבת','נביא','פרשת','בית כנסת']);
+const NOPE = /(fuck|shit|cunt|nigg|faggot|kike|raghead|towelhead|whore|slut|porn|nude|onlyfans|rape|kill all)/i;
+const BAD_LABELS = new Set(['porn','sexual','nudity','graphic-media','gore','spam','!hide','!warn']);
+const CLERGY = [
+  [/\b(rabbi|rebbetzin|cantor)\b|הרב/i, 'torah'],
+  [/\b(imam|sheikh|shaykh|ayatollah|mufti|maulana|mawlana)\b|إمام|مفتي|آية الله/i, 'quran'],
+  [/\b(stake president|lds bishop|latter-day saint bishop)\b/i, 'mormon'],
+  [/\b(pastor|priest|bishop|archbishop|cardinal|reverend|deacon|vicar|chaplain|monsignor)\b/i, 'bible'],
+  [/\b(swami|pujari|pandit|acharya)\b/i, 'hinduism'],
+  [/\b(buddhist monk|bhikkhu|bhikkhuni|lama|roshi|zen teacher|dharma teacher)\b/i, 'buddhism']
+];
+const LIVE = {ws:null, ok:false, failed:false, started:0, lastMsg:0, scanned:0, matched:0, ei:0, retry:0, prof:new Map(), want:new Set(), pending:[], curated:new Map()};
+const ANCHOR_T = {};
+ALLKEYS.forEach(k => ANCHOR_T[k] = {id:'@'+k, en:CORPUS[k].label, buzzGlow:0, mentions:0, get x(){ return (anchors[k] || {x:0}).x; }, get y(){ return (anchors[k] || {y:0}).y; }});
+let FIG_RX = [], TXT_RX = {}, ANY_RX = null, TERM_RX = [];
+function buildLiveRx(){
+  FIG_RX = Object.entries(FORMS).filter(([id]) => byId[id]).map(([id, o]) => ({c:byId[id], re:mkRx(o.f, o.ar, o.he), strict:o.strict, neg:o.neg}));
+  Object.entries(TEXTREF).forEach(([k, o]) => TXT_RX[k] = mkRx(o.f, o.ar, o.he));
+  const all = [];
+  [...Object.values(FORMS), ...Object.values(TEXTREF)].forEach(o => all.push(...(o.f || []), ...(o.ar || []), ...(o.he || [])));
+  ANY_RX = new RegExp('(?:' + all.map(escRx).join('|') + ')', 'iu');
+  TERM_RX = TERMS.map(t => ({t, re:mkRx([t.en, t.heTr, t.arTr], [t.ar.replace(/[ً-ٰٟ]/g, '')], [t.he.replace(/[֑-ׇ]/g, '')])}));
+}
+function analyzePost(text){
+  if (!ANY_RX.test(text)) return null;
+  const texts = KEYS.filter(k => TXT_RX[k] && TXT_RX[k].test(text));
+  const figs = [];
+  for (const F of FIG_RX){ const m = text.match(F.re); if (!m || (F.neg && F.neg.test(text))) continue; figs.push({c:F.c, form:m[0], strict:F.strict}); }
+  const strong = texts.length > 0 || figs.some(f => !f.strict) || CTX.test(text);
+  const hits = figs.filter(f => (!f.strict || strong) && C.includes(f.c)).slice(0, 3);
+  return hits.length || texts.length ? {hits, texts} : null;
+}
+function onJet(raw){
+  LIVE.lastMsg = performance.now();
+  if (!LIVE.ok){ LIVE.ok = true; renderFeedMode(); }
+  let m; try { m = JSON.parse(raw); } catch(e){ return; }
+  const cm = m && m.commit;
+  if (!cm || m.kind !== 'commit' || cm.operation !== 'create' || cm.collection !== 'app.bsky.feed.post') return;
+  LIVE.scanned++;
+  const rec = cm.record || {}, text = rec.text || '';
+  if (!text) return;
+  const labs = ((rec.labels && rec.labels.values) || []).map(v => v.val);
+  if (labs.some(l => BAD_LABELS.has(l)) || NOPE.test(text)) return;
+  const cur = LIVE.curated.get(m.did), a = analyzePost(text);
+  if (!a && !cur) return;
+  const post = {did:m.did, text, a:a || {hits:[], texts:[]}, url:`https://bsky.app/profile/${m.did}/post/${cm.rkey}`, t:performance.now()};
+  if (cur){ emitLive(post, cur.k, cur.role); return; }
+  const pr = LIVE.prof.get(m.did);
+  if (pr !== undefined){ if (!(pr && pr.blocked)) emitLive(post, pr && pr.k, pr && pr.role); return; }
+  LIVE.want.add(m.did); LIVE.pending.push(post);
+  if (LIVE.pending.length > 120) emitLive(LIVE.pending.shift());
+}
+function clergyOf(p){
+  const labs = (p.labels || []).map(l => l.val);
+  if (labs.some(l => BAD_LABELS.has(l))) return {blocked:true};
+  const d = ((p.description || '') + ' ' + (p.displayName || '')).slice(0, 500);
+  for (const [re, k] of CLERGY){ const m = d.match(re); if (m) return {k, role:m[0].charAt(0).toUpperCase() + m[0].slice(1).toLowerCase()}; }
+  return null;
+}
+async function fetchProfiles(){
+  if (LIVE.want.size){
+    const dids = [...LIVE.want].slice(0, 25); dids.forEach(d => LIVE.want.delete(d));
+    try {
+      const r = await fetch('https://public.api.bsky.app/xrpc/app.bsky.actor.getProfiles?' + dids.map(d => 'actors=' + encodeURIComponent(d)).join('&'));
+      const j = r.ok ? await r.json() : {};
+      const got = new Set();
+      (j.profiles || []).forEach(pf => { got.add(pf.did); LIVE.prof.set(pf.did, clergyOf(pf)); });
+      dids.forEach(d => { if (!got.has(d)) LIVE.prof.set(d, null); });
+    } catch(e){ dids.forEach(d => LIVE.prof.set(d, null)); }
+    if (LIVE.prof.size > 8000) LIVE.prof.clear();
+  }
+  const now = performance.now();
+  LIVE.pending = LIVE.pending.filter(p => {
+    const pr = LIVE.prof.get(p.did);
+    if (pr !== undefined){ if (!(pr && pr.blocked)) emitLive(p, pr && pr.k, pr && pr.role); return false; }
+    if (now - p.t > 4000){ emitLive(p); return false; }
+    return true;
+  });
+}
+function emitLive(p, k, role){
+  if (!layerChat.checked || S.feed !== 'live') return;
+  if (k && (!layerLeaders.checked || !KEYS.includes(k))) k = null;
+  const {hits, texts} = p.a;
+  if (!hits.length && !texts.length && !k) return;
+  LIVE.matched++;
+  const ex = k ? {leader:k, sp:.005 + Math.random()*.004} : {};
+  hits.forEach(h => { h.c.mentions++; launchSpark(h.c, Object.assign({}, ex)); });
+  texts.forEach(t => { ANCHOR_T[t].mentions++; launchSpark(ANCHOR_T[t], Object.assign({}, ex)); });
+  if (!hits.length && !texts.length) launchSpark(ANCHOR_T[k], Object.assign({}, ex));
+  TERM_RX.forEach(({t, re}) => { if (re.test(p.text)){ t.count++; pulseTerm(t); } });
+  const first = hits[0] ? hits[0].c : ANCHOR_T[texts[0] || k];
+  const shown = S.liveText ? (p.text.length > 240 ? p.text.slice(0, 237) + '…' : p.text) : `A post that names ${first.en}.`;
+  addFeed({tone:k ? role + ' on Bluesky' : 'Bluesky', text:shown, name:hits[0] ? hits[0].form : first.en, c:first, leader:k, url:p.url});
+  if (hits.some(h => h.c === selected)) renderStat();
+}
+function setLiveStats(){
+  const el = document.getElementById('liveStats');
+  el.hidden = S.feed !== 'live';
+  if (S.feed !== 'live') return;
+  el.textContent = LIVE.failed ? 'The live feed can\'t connect here, so these posts are simulated. It runs on the website.'
+    : LIVE.ok ? `Live: ${LIVE.scanned.toLocaleString()} post${LIVE.scanned === 1 ? '' : 's'} read, ${LIVE.matched.toLocaleString()} matched.` : 'Connecting to Bluesky…';
+}
+function renderFeedMode(){ document.getElementById('feedMode').textContent = S.feed === 'live' && !LIVE.failed ? (LIVE.ok ? 'live from Bluesky' : 'connecting') : 'simulated'; setLiveStats(); }
+function connectLive(){
+  if (LIVE.ws){ const old = LIVE.ws; LIVE.ws = null; try { old.close(); } catch(e){} }
+  if (S.feed !== 'live' || LIVE.failed) return;
+  let ws;
+  try { ws = new WebSocket(JET[LIVE.ei % JET.length] + '/subscribe?wantedCollections=app.bsky.feed.post'); }
+  catch(e){ liveFail(); return; }
+  LIVE.ws = ws;
+  ws.onmessage = e => onJet(e.data);
+  ws.onopen = () => { LIVE.retry = 0; };
+  ws.onclose = () => {
+    if (LIVE.ws !== ws) return;
+    LIVE.ws = null; LIVE.ei++; LIVE.retry++;
+    if (!LIVE.ok && LIVE.retry >= JET.length){ liveFail(); return; }
+    setTimeout(connectLive, Math.min(15000, 1000 * 2 ** Math.min(LIVE.retry, 4)));
+  };
+}
+function liveFail(){ LIVE.failed = true; if (LIVE.ws){ const w = LIVE.ws; LIVE.ws = null; try { w.close(); } catch(e){} } renderFeedMode(); }
+function startLive(){ LIVE.failed = false; LIVE.ok = false; LIVE.retry = 0; LIVE.started = performance.now(); renderFeedMode(); connectLive(); }
+function initLive(){
+  buildLiveRx();
+  fetch('leaders.json').then(r => r.ok ? r.json() : []).then(list => (Array.isArray(list) ? list : []).forEach(L => {
+    if (!L || !L.tradition || (!L.handle && !L.did)) return;
+    const add = did => LIVE.curated.set(did, {k:L.tradition, role:L.role || 'Religious leader'});
+    if (L.did) add(L.did);
+    else fetch('https://public.api.bsky.app/xrpc/com.atproto.identity.resolveHandle?handle=' + encodeURIComponent(L.handle)).then(r => r.json()).then(j => j && j.did && add(j.did)).catch(() => {});
+  })).catch(() => {});
+  setInterval(fetchProfiles, 1500);
+  setInterval(() => {
+    if (S.feed === 'live' && !LIVE.failed){
+      const now = performance.now();
+      if (!LIVE.ok && now - LIVE.started > 12000) liveFail();
+      else if (LIVE.ok && LIVE.ws && now - LIVE.lastMsg > 20000){ const w = LIVE.ws; LIVE.ws = null; try { w.close(); } catch(e){} LIVE.ei++; connectLive(); }
+    }
+    setLiveStats();
+  }, 1000);
+  document.getElementById('feedSrc').addEventListener('change', e => {
+    S.feed = e.target.value; saveS();
+    if (S.feed === 'live'){ feedEl.replaceChildren(); startLive(); } else { liveFail(); LIVE.failed = false; renderFeedMode(); }
+  });
+  if (S.feed === 'live') startLive(); else renderFeedMode();
+}
+
+// ---------- drawing ----------
+function bez(p0,p1,p2,t){ const m=1-t; return [m*m*p0.x+2*m*t*p1.x+t*t*p2.x, m*m*p0.y+2*m*t*p1.y+t*t*p2.y]; }
+
+function stepArt(now){
+  actx.globalCompositeOperation = 'source-over';
+  actx.globalAlpha = 1;
+  actx.fillStyle = `rgba(${bgRGB[0]},${bgRGB[1]},${bgRGB[2]},${fadeAmt()})`;
+  actx.fillRect(0,0,W,H);
+  if (layerInk.checked){
+    actx.globalCompositeOperation = dark ? 'lighter' : 'multiply';
+    const glow = S.ink === 'glow', streak = S.ink === 'streaks';
+    actx.globalAlpha = glow ? (dark ? .22 : .16) : (dark ? .5 : .42);
+    KEYS.forEach(k => {
+      const z = S.inkSize;
+      actx.fillStyle = colors[k]; actx.strokeStyle = colors[k]; actx.lineWidth = 1.2*z;
+      if (streak) actx.beginPath();
+      const A = anchors[k];
+      for (const p of particles[k]){
+        const c = p.c; let x, y;
+        if (p.stream){
+          p.t += p.sp*(1 + 2.5*((c.act && c.act[k]) || 0)); if (p.t > 1) p.t = 0;
+          const dx=c.x-A.x, dy=c.y-A.y;
+          const ctrl = {x:(A.x+c.x)/2 - dy*p.bend, y:(A.y+c.y)/2 + dx*p.bend};
+          [x,y] = bez(A, ctrl, c, p.t);
+          if (activeTerm && !activeTerm.chars.includes(c.id)) continue;
+        } else {
+          const role = motionRole(c,k); let rad = c.r*p.base;
+          p.ang += p.av;
+          if (role==='te') rad *= 1 + .28*Math.sin(now*.0018 + p.ph);
+          else if (role==='tr'){ rad += (Math.random()-.5)*c.r*.7; p.ang += (Math.random()-.5)*.25; }
+          else if (role==='ad'){ rad += (Math.random()-.5)*c.r*1.1; p.ang += (Math.random()-.5)*.4; }
+          x = c.x + Math.cos(p.ang)*rad; y = c.y + Math.sin(p.ang)*rad;
+        }
+        if (streak){ if (p.px !== undefined && Math.abs(x-p.px) + Math.abs(y-p.py) < 40){ actx.moveTo(p.px, p.py); actx.lineTo(x, y); } }
+        else if (glow) actx.fillRect(x-2*z, y-2*z, 4*z, 4*z);
+        else actx.fillRect(x-.8*z, y-.8*z, 1.6*z, 1.6*z);
+        p.px = x; p.py = y;
+      }
+      if (streak) actx.stroke();
+    });
+  }
+  if (layerChat.checked){
+    actx.globalCompositeOperation = 'source-over';
+    actx.globalAlpha = .9;
+    for (let i=sparks.length-1;i>=0;i--){
+      const s = sparks[i]; s.t += s.sp;
+      const col = s.leader ? colors[s.leader] : colors.spark;
+      if (s.t >= 1){ s.c.buzzGlow = Math.min(8, s.c.buzzGlow + (s.leader ? 2.5 : 1));
+        if (S.posts === 'rain') ripples.push({x:s.c.x, y:s.c.y, r:2, max:s.leader ? 34 : 18, col});
+        sparks.splice(i,1); continue; }
+      actx.fillStyle = col;
+      if (S.posts === 'rain'){
+        const pos = q => [s.c.x + s.dx0*(1 - q) + (s.jag ? Math.sin(q*40)*2 : 0), -12 + (s.c.y + 12)*q];
+        const p = Math.pow(s.t, 1.7), [x, y] = pos(p), [px, py] = pos(Math.max(0, p - (s.leader ? .07 : .045)));
+        actx.strokeStyle = col; actx.lineWidth = s.leader ? 2.2 : 1.1; actx.lineCap = 'round';
+        actx.beginPath(); actx.moveTo(px, py); actx.lineTo(x, y); actx.stroke();
+        actx.beginPath(); actx.arc(x, y, s.leader ? 2.4 : 1.2, 0, Math.PI*2); actx.fill();
+        continue;
+      }
+      let [x,y] = bez({x:s.sx,y:s.sy}, {x:s.cx,y:s.cy}, s.c, s.t);
+      if (s.jag){ x += (Math.random()-.5)*4; y += (Math.random()-.5)*4; }
+      if (s.leader){ actx.beginPath(); actx.arc(x, y, 3.2, 0, Math.PI*2); actx.fill(); } else actx.fillRect(x-1, y-1, 2.2, 2.2);
+    }
+  } else sparks.length = 0;
+  actx.globalAlpha = 1; actx.globalCompositeOperation = 'source-over';
+}
+
+function drawUI(){
+  uctx.clearRect(0,0,W,H);
+  if (S.bg === 'space'){
+    const tnow = performance.now()*.001; uctx.fillStyle = '#ffffff';
+    stars.forEach(st => { uctx.globalAlpha = st.a*(.7 + .3*Math.sin(tnow + st.ph)); uctx.fillRect(st.x, st.y, st.r, st.r); });
+    uctx.globalAlpha = 1;
+  }
+  // anchors and their calendar dials
+  const di = Math.floor(simDay), dd = CAL.days[di];
+  KEYS.forEach(k => {
+    const B = anchorBase[k], A = anchors[k], calOn = S.cal && CAL.ok[k];
+    if (calOn && S.dials){
+      const y = dd && dd['y_'+k];
+      uctx.strokeStyle = colors[k]; uctx.lineWidth = 1; uctx.globalAlpha = .3;
+      uctx.beginPath(); uctx.arc(B.x, B.y, dialR, 0, Math.PI*2); uctx.stroke();
+      if (y){
+        uctx.globalAlpha = .65;
+        y.ticks.forEach(f => { const th = f*Math.PI*2 - Math.PI/2, cs = Math.cos(th), sn = Math.sin(th);
+          uctx.beginPath(); uctx.moveTo(B.x + cs*(dialR-3), B.y + sn*(dialR-3)); uctx.lineTo(B.x + cs*(dialR+3), B.y + sn*(dialR+3)); uctx.stroke(); });
+        uctx.lineWidth = 3; uctx.globalAlpha = .6;
+        CAL.occ.forEach(o => { if (o.ev.k !== k || o.e < y.s || o.s >= y.s + y.len) return;
+          const a0 = (o.s - y.s)/y.len*Math.PI*2 - Math.PI/2, a1 = (o.e + 1 - y.s)/y.len*Math.PI*2 - Math.PI/2;
+          uctx.beginPath(); uctx.arc(B.x, B.y, dialR, a0, Math.max(a1, a0 + .06)); uctx.stroke(); });
+      }
+      uctx.lineWidth = 1; uctx.globalAlpha = .45;
+      uctx.beginPath(); uctx.moveTo(B.x, B.y); uctx.lineTo(A.x, A.y); uctx.stroke();
+      uctx.globalAlpha = 1;
+    }
+    const holy = calOn && dd && (k === 'buddhism' ? (MOON.NS.has(di) || MOON.FS.has(di)) : dd.dow === HOLY[k]);
+    if (holy){
+      const g = uctx.createRadialGradient(A.x, A.y, 0, A.x, A.y, 18);
+      g.addColorStop(0, colors[k]); g.addColorStop(1, rgb(hexRGB(colors[k]), 0));
+      uctx.globalAlpha = .55; uctx.fillStyle = g; uctx.beginPath(); uctx.arc(A.x, A.y, 18, 0, Math.PI*2); uctx.fill(); uctx.globalAlpha = 1;
+    }
+    uctx.fillStyle = colors[k];
+    uctx.beginPath(); uctx.arc(A.x, A.y, holy ? 6 : 4.5, 0, Math.PI*2); uctx.fill();
+    const AT = ANCHOR_T[k];
+    if (AT && AT.buzzGlow > .05 && layerChat.checked){ uctx.strokeStyle = colors[k]; uctx.lineWidth = 1.5; uctx.globalAlpha = Math.min(.8, AT.buzzGlow*.2);
+      uctx.beginPath(); uctx.arc(A.x, A.y, 9 + AT.buzzGlow*2.5, 0, Math.PI*2); uctx.stroke(); uctx.globalAlpha = 1; }
+    if (!S.textNames) return;
+    const off = calOn && S.dials ? dialR : 0, below = BELOW.has(k), long = CORPUS[k].label.length > 9;
+    uctx.textAlign = 'center';
+    uctx.font = `600 ${W<560 ? (long?15:20) : (long?21:26)}px "Cormorant Garamond", Georgia, serif`;
+    const ly = below ? B.y + off + 28 : B.y - off - 14;
+    uctx.fillText(W < 560 && CORPUS[k].short ? CORPUS[k].short : CORPUS[k].label, B.x, ly);
+    if (W >= 560){
+      uctx.font = '10.5px "IBM Plex Mono", monospace'; uctx.fillStyle = colors.muted;
+      uctx.fillText(calOn ? calLabel[k] : CORPUS[k].sub, B.x, below ? ly + 15 : ly - 26);
+    }
+  });
+  // calendar beams: a text reaching for the figures its calendar is remembering
+  if (S.cal){
+    C.forEach(c => KEYS.forEach((k, ki) => {
+      const a = c.act && c.act[k]; if (!a || a < .04) return;
+      const A = anchors[k];
+      uctx.strokeStyle = colors[k];
+      uctx.globalAlpha = .4*a; uctx.lineWidth = 1 + 1.5*a;
+      uctx.beginPath(); uctx.moveTo(A.x, A.y); uctx.lineTo(c.x, c.y); uctx.stroke();
+      uctx.globalAlpha = .75*a; uctx.lineWidth = 2;
+      uctx.beginPath(); uctx.arc(c.x, c.y, (c.hit ? c.hit - 4 : c.r) + 4*ki, 0, Math.PI*2); uctx.stroke();
+      uctx.globalAlpha = 1;
+    }));
+  }
+  // shared-term links
+  if (activeTerm){
+    const ns = activeTerm.chars.map(id => byId[id]);
+    const cx = ns.reduce((s,n)=>s+n.x,0)/ns.length, cy = ns.reduce((s,n)=>s+n.y,0)/ns.length;
+    uctx.strokeStyle = colors.fg; uctx.globalAlpha = .45; uctx.lineWidth = 1;
+    ns.forEach(n => { uctx.beginPath(); uctx.moveTo(cx,cy);
+      uctx.quadraticCurveTo((cx+n.x)/2 + (n.y-cy)*.15, (cy+n.y)/2 - (n.x-cx)*.15, n.x, n.y); uctx.stroke(); });
+    uctx.globalAlpha = 1;
+    uctx.textAlign = 'center';
+    uctx.font = '20px "Noto Serif Hebrew", serif';
+    labelText(activeTerm.he + '   ' + activeTerm.ar, cx, cy - 4, colors.fg, '20px "Amiri", "Noto Serif Hebrew", serif');
+    labelText(activeTerm.root, cx, cy + 14, colors.muted, '11px "IBM Plex Mono", monospace');
+  }
+  // ripples where posts land
+  for (let i = ripples.length - 1; i >= 0; i--){
+    const rp = ripples[i]; rp.r += .55;
+    if (rp.r > rp.max){ ripples.splice(i, 1); continue; }
+    uctx.strokeStyle = rp.col; uctx.lineWidth = 1; uctx.globalAlpha = .8*(1 - rp.r/rp.max);
+    uctx.beginPath(); uctx.ellipse(rp.x, rp.y, rp.r, rp.r*.38, 0, 0, Math.PI*2); uctx.stroke();
+    if (rp.r > 8){ uctx.globalAlpha *= .5; uctx.beginPath(); uctx.ellipse(rp.x, rp.y, rp.r - 7, (rp.r - 7)*.38, 0, 0, Math.PI*2); uctx.stroke(); }
+  }
+  uctx.globalAlpha = 1;
+  // nodes
+  C.forEach(c => {
+    const dim = activeTerm && !activeTerm.chars.includes(c.id);
+    const A = dim ? .3 : 1;
+    const R = c.r*.62, m = mixColor(c);
+    const focus = c === selected || c === hovered;
+    let outer = R, labelY = c.y + R + 16, selR = R + 6;
+    if (S.shape === 'planets'){ outer = R*1.15*1.6; labelY = c.y + R*1.15 + 18; selR = R*1.15 + 5; }
+    else if (S.shape === 'stars'){ outer = R*1.2; labelY = c.y + R*.9 + 14; selR = Math.max(4, R*.35) + 6; }
+    else if (S.shape === 'names'){ outer = Math.max(18, R); labelY = null; }
+    if (c.idea && S.shape !== 'names'){ outer = R*1.25; labelY = c.y + R*1.25 + 15; selR = R*1.25 + 6; }
+    c.hit = outer + 10;
+    uctx.globalAlpha = A;
+    if (c.buzzGlow > .05 && layerChat.checked){
+      uctx.strokeStyle = colors.spark; uctx.lineWidth = 1;
+      uctx.globalAlpha = A * Math.min(.55, c.buzzGlow*.12);
+      uctx.beginPath(); uctx.arc(c.x, c.y, outer + 5 + c.buzzGlow*2.2, 0, Math.PI*2); uctx.stroke();
+      uctx.globalAlpha = A;
+    }
+    if (c.idea && S.shape !== 'names') drawIdea(c, R, m);
+    else if (S.shape === 'rings') drawRings(c, R);
+    else if (S.shape === 'planets') drawPlanet(c, R*1.15, m);
+    else if (S.shape === 'stars') drawStar(c, R, m);
+    if (focus && S.shape !== 'names'){
+      uctx.strokeStyle = colors.fg; uctx.lineWidth = 1; uctx.setLineDash(S.shape === 'planets' ? [3,3] : []);
+      uctx.beginPath(); uctx.arc(c.x, c.y, selR, 0, Math.PI*2); uctx.stroke(); uctx.setLineDash([]);
+    }
+    drawLabel(c, labelY, m, focus);
+    uctx.globalAlpha = 1;
+  });
+}
+function textShares(c){
+  const tot = c.total + (c.u ? .08*c.total : 0);
+  return KEYS.map(k => {
+    let share = c.rate[k]/tot, dashed = false;
+    if (!share && c.u && c.u[k]){ share = .08*c.total/tot; dashed = true; }
+    return {k, share, dashed};
+  }).filter(o => o.share > 0);
+}
+function drawRings(c, R){
+  uctx.fillStyle = colors.panel;
+  uctx.beginPath(); uctx.arc(c.x, c.y, R, 0, Math.PI*2); uctx.fill();
+  let a0 = -Math.PI/2; uctx.lineWidth = c === selected ? 4 : 3;
+  textShares(c).forEach(o => {
+    uctx.strokeStyle = colors[o.k]; uctx.setLineDash(o.dashed ? [2,3] : []);
+    uctx.beginPath(); uctx.arc(c.x, c.y, R, a0 + .04, a0 + o.share*Math.PI*2 - .04); uctx.stroke();
+    a0 += o.share*Math.PI*2;
+  });
+  uctx.setLineDash([]);
+}
+function drawPlanet(c, R, m){
+  const tilt = -.38, sh = textShares(c).sort((a,b) => b.share - a.share);
+  const g0 = uctx.createRadialGradient(c.x, c.y, R*.8, c.x, c.y, R*1.9);
+  g0.addColorStop(0, rgb(m, dark ? .32 : .22)); g0.addColorStop(1, rgb(m, 0));
+  uctx.fillStyle = g0; uctx.beginPath(); uctx.arc(c.x, c.y, R*1.9, 0, Math.PI*2); uctx.fill();
+  const ring = (o, i, back) => {
+    const rx = R*(1.45 + i*.3), ry = rx*.3;
+    uctx.save(); uctx.translate(c.x, c.y); uctx.rotate(tilt);
+    uctx.strokeStyle = colors[o.k]; uctx.lineWidth = o.dashed ? 1 : 1 + o.share*3.5; uctx.setLineDash(o.dashed ? [2,3] : []);
+    uctx.beginPath(); uctx.ellipse(0, 0, rx, ry, 0, back ? Math.PI : 0, back ? Math.PI*2 : Math.PI); uctx.stroke();
+    uctx.restore();
+  };
+  sh.forEach((o,i) => ring(o, i, true));
+  const g = uctx.createRadialGradient(c.x - R*.4, c.y - R*.45, R*.08, c.x, c.y, R);
+  g.addColorStop(0, rgb(shade(m, .6))); g.addColorStop(.5, rgb(m)); g.addColorStop(1, rgb(shade(m, -.65)));
+  uctx.fillStyle = g; uctx.beginPath(); uctx.arc(c.x, c.y, R, 0, Math.PI*2); uctx.fill();
+  sh.forEach((o,i) => ring(o, i, false));
+  uctx.setLineDash([]);
+}
+function ideaPath(shape, x, y, r){
+  uctx.beginPath();
+  if (shape === 'circle'){ uctx.arc(x, y, r*.85, 0, Math.PI*2); return; }
+  const n = shape === 'triangle' ? 3 : shape === 'hexagon' ? 6 : shape === 'star' ? 10 : 4;
+  const rot = shape === 'square' ? Math.PI/4 : -Math.PI/2;
+  for (let i = 0; i < n; i++){
+    const a = rot + i*2*Math.PI/n, rr = shape === 'star' && i % 2 ? r*.45 : shape === 'square' ? r*.95 : shape === 'triangle' ? r*1.1 : r;
+    const px = x + Math.cos(a)*rr, py = y + Math.sin(a)*rr; i ? uctx.lineTo(px, py) : uctx.moveTo(px, py);
+  }
+  uctx.closePath();
+}
+function drawIdea(c, R, m){
+  const r = R*1.25, base = S.ideaColor === 'single' ? hexRGB(S.ideaHex) : m;
+  ideaPath(S.ideaShape, c.x, c.y, r);
+  if (S.ideaColor === 'outline'){ uctx.strokeStyle = rgb(shade(m, dark ? .35 : -.25)); uctx.lineWidth = 2; uctx.stroke(); return; }
+  const g = uctx.createLinearGradient(c.x - r, c.y - r, c.x + r, c.y + r);
+  g.addColorStop(0, rgb(shade(base, .45))); g.addColorStop(1, rgb(shade(base, -.4)));
+  uctx.fillStyle = g; uctx.strokeStyle = colors.fg; uctx.lineWidth = 1;
+  uctx.fill(); uctx.globalAlpha *= .5; uctx.stroke(); uctx.globalAlpha /= .5;
+}
+function drawStar(c, R, m){
+  const g = uctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, R*2.2);
+  g.addColorStop(0, rgb(shade(m, .7), .95)); g.addColorStop(.18, rgb(m, .55)); g.addColorStop(1, rgb(m, 0));
+  uctx.fillStyle = g; uctx.beginPath(); uctx.arc(c.x, c.y, R*2.2, 0, Math.PI*2); uctx.fill();
+  uctx.strokeStyle = rgb(shade(m, .5), .75); uctx.lineWidth = 1;
+  const L = R*2.4, l = R*1.1;
+  uctx.beginPath();
+  uctx.moveTo(c.x - L, c.y); uctx.lineTo(c.x + L, c.y); uctx.moveTo(c.x, c.y - L); uctx.lineTo(c.x, c.y + L);
+  uctx.moveTo(c.x - l*.7, c.y - l*.7); uctx.lineTo(c.x + l*.7, c.y + l*.7); uctx.moveTo(c.x + l*.7, c.y - l*.7); uctx.lineTo(c.x - l*.7, c.y + l*.7);
+  uctx.stroke();
+  uctx.fillStyle = rgb(shade(m, .85)); uctx.beginPath(); uctx.arc(c.x, c.y, Math.max(2, R*.3), 0, Math.PI*2); uctx.fill();
+}
+function labelLines(c, mode, fs, w){
+  const en = {t:c.en, f:`${c.idea ? 'italic ' : ''}${w} ${fs}px "IBM Plex Sans", system-ui, sans-serif`, h:fs+4};
+  if (c.idea) return [en];
+  if (mode === 'he') return [{t:c.he, f:`${fs+4}px "Noto Serif Hebrew", serif`, h:fs+8}];
+  if (mode === 'ar') return [{t:c.ar, f:`${fs+6}px "Amiri", serif`, h:fs+10}];
+  if (mode === 'all') return [en, {t:c.he + '   ' + c.ar, f:`${fs+3}px "Amiri", "Noto Serif Hebrew", serif`, h:fs+8}];
+  return [en];
+}
+function drawLabel(c, y, m, focus){
+  const w = focus ? 600 : 500;
+  if (y === null){
+    const fs = Math.round(Math.max(11, Math.min(30, c.r*.85)));
+    const col = rgb(shade(m, dark ? .35 : -.45));
+    const lines = labelLines(c, S.labels === 'none' ? 'en' : S.labels, fs, focus ? 700 : 500);
+    let yy = c.y + fs*.35 - (lines.length - 1)*fs*.5;
+    lines.forEach((L,i) => { labelText(L.t, c.x, yy, i === 0 ? col : colors.muted, L.f); yy += L.h; });
+    return;
+  }
+  if (S.labels === 'none') return;
+  const fs = focus ? 13 : 12; let yy = y;
+  labelLines(c, S.labels, fs, w).forEach((L,i) => { labelText(L.t, c.x, yy, i === 0 ? colors.fg : colors.muted, L.f); yy += L.h; });
+}
+function labelText(t, x, y, fill, font){
+  uctx.font = font; uctx.textAlign = 'center';
+  uctx.lineWidth = 4; uctx.strokeStyle = colors.bg; uctx.lineJoin = 'round';
+  uctx.strokeText(t, x, y); uctx.fillStyle = fill; uctx.fillText(t, x, y);
+}
+
+// ---------- panel ----------
+let maxRate = Math.max(...C.flatMap(c => KEYS.map(k => c.rate[k])));
+function renderDetail(){
+  const c = selected;
+  document.getElementById('dName').textContent = c.en;
+  const names = document.getElementById('dNames'); names.replaceChildren();
+  const mk = (cls, script, tr, lang) => { const s = document.createElement('span');
+    const g = document.createElement('span'); g.className = cls; g.lang = lang; g.dir = 'rtl'; g.textContent = script;
+    const b = document.createElement('b'); b.textContent = ' ' + tr; s.append(g, b); return s; };
+  if (c.idea) names.textContent = 'A shared idea. Its weights are a curatorial reading, not counts.';
+  else names.append(mk('he', c.he, c.heTr, 'he'), mk('ar', c.ar, c.arTr, 'ar'));
+  const rows = document.getElementById('dRows'); rows.replaceChildren();
+  KEYS.forEach(k => {
+    const row = document.createElement('div'); row.className = 'row';
+    const lab = document.createElement('span'); lab.className = 'k'; lab.style.color = colors[k] || ''; lab.textContent = CORPUS[k].short || CORPUS[k].label;
+    const bar = document.createElement('div'); bar.className = 'bar';
+    const fill = document.createElement('i'); fill.style.background = `var(--${k})`;
+    fill.style.width = (Math.sqrt(c.rate[k]/maxRate)*100).toFixed(1) + '%'; bar.appendChild(fill);
+    const meta = document.createElement('div'); meta.className = 'meta';
+    if (c.idea){ meta.textContent = c.w[k] ? ['Slight','Some','Strong'][c.w[k]-1] + ' presence' : 'Absent'; }
+    else if (c.n[k]){
+      meta.innerHTML = `<span>${c.n[k].toLocaleString()} verses</span><span>${c.rate[k].toFixed(1)} per 1,000 verses</span>`;
+      const pill = document.createElement('span'); pill.className = 'pill'; pill.textContent = ROLE_LABEL[roleOf(c,k)]; meta.appendChild(pill);
+    } else if (c.u && c.u[k]) meta.textContent = (c.parLabel && c.parLabel[k]) || 'Story told, name not given';
+    else meta.textContent = 'Not in this text';
+    row.append(lab, bar, meta);
+    if (c.note[k]){ const note = document.createElement('div'); note.className = 'note'; note.textContent = c.note[k]; row.appendChild(note); }
+    rows.appendChild(row);
+  });
+  renderStat();
+  charSel.value = c.id;
+}
+function renderStat(){
+  const t = TERMS.filter(t => t.chars.includes(selected.id)).map(t => t.en);
+  document.getElementById('dStat').textContent =
+    `${selected.mentions} posts this session` + (t.length ? ` · shared words: ${t.join(', ')}` : '');
+}
+function renderTerms(){
+  termsEl.replaceChildren();
+  TERMS.forEach(t => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.id = 'term-' + t.id;
+    b.setAttribute('aria-pressed', activeTerm === t ? 'true' : 'false');
+    b.innerHTML = `<span class="t">${t.en}</span><span class="w"><span class="he" lang="he">${t.he}</span><span class="ar" lang="ar">${t.ar}</span></span><span class="n">${t.root} · <span data-n>${t.count}</span> posts</span>`;
+    b.addEventListener('click', () => {
+      activeTerm = activeTerm === t ? null : t;
+      termsEl.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', x.id === 'term-'+(activeTerm&&activeTerm.id) ? 'true':'false'));
+      termNote.textContent = activeTerm
+        ? `${t.heTr} and ${t.arTr} share the root ${t.root}. ${t.note}`
+        : 'Pick a word to link the figures whose stories use it. Many key words share a Semitic root in Hebrew and Arabic.';
+      if (!running) frame(performance.now(), true);
+    });
+    termsEl.appendChild(b);
+  });
+}
+function pulseTerm(t){
+  const b = document.getElementById('term-'+t.id); if (!b) return;
+  b.querySelector('[data-n]').textContent = t.count;
+  if (reduceMotion) return;
+  b.classList.remove('pulse'); void b.offsetWidth; b.classList.add('pulse');
+}
+
+// ---------- interaction ----------
+function nodeAt(e){
+  const r = ui.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+  let best = null, bd = Infinity;
+  C.forEach(c => { const d = Math.hypot(c.x-x, c.y-y); if (d < (c.hit || c.r*.62 + 14) && d < bd){ bd = d; best = c; } });
+  return best;
+}
+ui.addEventListener('pointermove', e => { hovered = nodeAt(e); ui.style.cursor = hovered ? 'pointer' : 'default'; if(!running) drawUI(); });
+ui.addEventListener('pointerleave', () => { hovered = null; if(!running) drawUI(); });
+ui.addEventListener('click', e => { const n = nodeAt(e); if (n){ selected = n; renderDetail(); if(!running) drawUI(); } });
+C.forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = c.en; charSel.appendChild(o); });
+charSel.addEventListener('change', () => { selected = byId[charSel.value]; renderDetail(); if(!running) drawUI(); });
+
+document.getElementById('eventBtn').addEventListener('click', () => {
+  activeEvent = EVENTS[eventIdx++ % EVENTS.length]; eventUntil = performance.now() + 14000;
+  eventBadge.hidden = false;
+  eventBadge.textContent = `${activeEvent.label}: ${activeEvent.ids.map(id => byId[id].en).join(', ')} trending`;
+  if (+rateIn.value < 1) rateIn.value = 1.4;
+  if (!running) toggle();
+});
+function toggle(){ running = !running; playBtn.textContent = running ? 'Pause' : 'Play'; if (running){ last = performance.now(); requestAnimationFrame(loop); } }
+playBtn.addEventListener('click', toggle);
+layerInk.addEventListener('change', () => { if(!running) frame(performance.now(), true); });
+
+// theme changes
+const remap = () => { readColors(); renderDetail(); syncBoard(); };
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', remap);
+new MutationObserver(remap).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+let rz; new ResizeObserver(() => { clearTimeout(rz); rz = setTimeout(() => { layout(); if(!running) warm(120); }, 120); }).observe(field);
+
+// ---------- calendar motion ----------
+function yearFrac(k){ const d = CAL.days[Math.floor(simDay)], y = d && d['y_'+k]; return y ? ((simDay - y.s)/y.len) % 1 : 0; }
+function calStep(dt){
+  if (calPlaying && dt){ simDay += dt/1000*calSpeed; if (simDay >= SCRUB1 + 1) simDay = SCRUB0; }
+  const di = Math.floor(simDay);
+  if (di !== lastDayInt){ lastDayInt = di; onDayChange(di); }
+  KEYS.forEach(k => { const B = anchorBase[k], th = yearFrac(k)*Math.PI*2 - Math.PI/2, r = (S.cal && CAL.ok[k]) ? dialR : 0;
+    anchors[k].x = B.x + Math.cos(th)*r; anchors[k].y = B.y + Math.sin(th)*r; });
+  ALLC.forEach(c => { c.act = c.act || Object.fromEntries(ALLKEYS.map(k => [k, 0])); c.tact = Object.fromEntries(ALLKEYS.map(k => [k, 0])); });
+  if (S.cal){
+    CAL.occ.forEach(o => { if (o.s > simDay + 4 || o.e < simDay - 4 || !KEYS.includes(o.ev.k)) return; const I = occI(o, simDay); if (!I) return;
+      o.ev.chars.forEach(id => { const c = byId[id]; c.tact[o.ev.k] = Math.max(c.tact[o.ev.k], I); }); });
+    const d = CAL.days[di];
+    if (d && d.par !== undefined){ const w = d.dow === 6 ? .6 : .4; PARASHOT[d.par][1].forEach(id => { const c = byId[id]; c.tact.torah = Math.max(c.tact.torah, w); }); }
+    if (d && d.dow === 5 && CAL.ok.quran) byId.moses.tact.quran = Math.max(byId.moses.tact.quran, .3);
+  }
+  const ease = Math.min(1, dt/350);
+  C.forEach(c => {
+    let tx = 0, ty = 0;
+    KEYS.forEach(k => { c.act[k] += (c.tact[k] - c.act[k])*ease; const a = c.act[k]; if (a < .002) return;
+      tx += (anchorBase[k].x - c.hx)*.26*a*S.calPull; ty += (anchorBase[k].y - c.hy)*.26*a*S.calPull; });
+    const L = Math.hypot(tx, ty), mx = Math.min(W, H)*.17; if (L > mx){ tx *= mx/L; ty *= mx/L; }
+    c.ox = tx; c.oy = ty; c.x = c.hx + tx; c.y = c.hy + ty;
+  });
+}
+const calEls = {};
+function dotFor(k){ const i = document.createElement('i'); i.className = 'dot'; i.style.background = `var(--${k})`; return i; }
+function onDayChange(di){
+  const d = CAL.days[di]; if (!d || !calEls.g) return;
+  const g = new Date(d.t), ip = parts(fmtIL, g);
+  const par = d.par !== undefined ? PARASHOT[d.par][0] : null;
+  calLabel.torah = CAL.ok.torah ? `${d.hd} ${d.hmName} ${d.hy}` + (par ? ` · ${par}` : '') : 'Hebrew calendar unavailable';
+  calLabel.bible = liturgical(d);
+  calLabel.quran = CAL.ok.quran ? `${ip.day} ${ip.month} ${ip.year} AH` : 'Islamic calendar unavailable';
+  { const ln = MOON.NEW.filter(x => x <= di).pop(), lf = MOON.FULL.filter(x => x <= di).pop(), nf = MOON.FULL.find(x => x >= di);
+    calLabel.hinduism = ln === undefined ? '' : (lf === undefined || ln >= lf) ? `Shukla paksha, day ${di - ln + 1}` : `Krishna paksha, day ${di - lf + 1}`;
+    calLabel.buddhism = MOON.FS.has(di) ? 'Uposatha: full moon' : MOON.NS.has(di) ? 'Uposatha: new moon' : nf !== undefined ? `${nf - di} day${nf - di === 1 ? '' : 's'} to the full moon` : ''; }
+  ['mormon','scientology','ea'].forEach(k => { const y = d['y_'+k]; calLabel[k] = y ? `Civil year, day ${d.i - y.s + 1}` : ''; });
+  calEls.g.textContent = fmtG ? fmtG.format(g) : g.toDateString();
+  calEls.dates.replaceChildren(...KEYS.map(k => { const s = document.createElement('span'); s.append(dotFor(k), document.createTextNode(calLabel[k])); return s; }));
+  calEls.scrub.value = di;
+  const items = [];
+  CAL.occ.forEach(o => { if (di >= o.s && di <= o.e && KEYS.includes(o.ev.k)) items.push({k:o.ev.k, name:o.ev.name, chars:o.ev.chars, note:o.ev.note}); });
+  if (par) items.push({k:'torah', name:`Weekly Torah portion: ${par}`, chars:PARASHOT[d.par][1], note:'Read in synagogue this Shabbat (approximate schedule).'});
+  if (d.dow === 6 && CAL.ok.torah) items.push({k:'torah', name:'Shabbat', chars:[], note:'The weekly day of rest. The Torah dial glows.'});
+  if (d.dow === 0) items.push({k:'bible', name:'Sunday', chars:[], note:'The Lord\'s Day. The Bible dial glows.'});
+  if (d.dow === 5 && CAL.ok.quran) items.push({k:'quran', name:'Jumu\'ah', chars:['moses'], note:'Friday prayer. Many read Surah al-Kahf, which tells of Moses and al-Khidr.'});
+  if (KEYS.includes('buddhism') && (MOON.NS.has(di) || MOON.FS.has(di))) items.push({k:'buddhism', name:'Uposatha', chars:[], note:'Observance day on the new and full moon. Lay people may keep extra precepts. The Buddhism dial glows.'});
+  calEls.now.replaceChildren(...items.slice(0, 6).map(it => {
+    const li = document.createElement('li'), body = document.createElement('span'), b = document.createElement('b');
+    b.textContent = it.name; body.appendChild(b);
+    if (it.chars.length) body.append(document.createTextNode(' · ' + it.chars.map(id => byId[id].en).join(', ')));
+    const sm = document.createElement('small'); sm.textContent = it.note; body.appendChild(sm);
+    li.append(dotFor(it.k), body); return li;
+  }));
+  const next = CAL.occ.filter(o => o.s > di && o.s <= SCRUB1 && KEYS.includes(o.ev.k)).slice(0, 5);
+  calEls.next.replaceChildren(...next.map(o => {
+    const li = document.createElement('li'), b = document.createElement('button'); b.type = 'button';
+    const w = document.createElement('span'); w.className = 'when'; w.textContent = fmtShort ? fmtShort.format(new Date(CAL.days[o.s].t)) : '';
+    const n = document.createElement('span'); n.textContent = o.ev.name;
+    b.append(w, dotFor(o.ev.k), n);
+    b.addEventListener('click', () => { simDay = o.s; setCalPlaying(false); if (!running) frame(performance.now(), true); });
+    li.appendChild(b); return li;
+  }));
+}
+function setCalPlaying(v){ calPlaying = v; calEls.play.textContent = v ? 'Pause year' : 'Play year'; if (v && !running) toggle(); }
+function buildCalUI(){
+  calEls.g = document.getElementById('gDate'); calEls.dates = document.getElementById('cDates');
+  calEls.now = document.getElementById('calNow'); calEls.next = document.getElementById('calNext');
+  calEls.scrub = document.getElementById('calScrub'); calEls.play = document.getElementById('calPlay');
+  calEls.scrub.min = SCRUB0; calEls.scrub.max = SCRUB1; calEls.scrub.step = 1;
+  calEls.scrub.addEventListener('input', () => { simDay = +calEls.scrub.value; setCalPlaying(false); if (!running) frame(performance.now(), true); });
+  calEls.play.addEventListener('click', () => setCalPlaying(!calPlaying));
+  document.getElementById('calToday').addEventListener('click', () => { simDay = todayIdx; setCalPlaying(false); if (!running) frame(performance.now(), true); });
+  const segBtns = document.querySelectorAll('[data-cal]');
+  const syncSeg = () => segBtns.forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.cal === calSpeed)));
+  segBtns.forEach(b => b.addEventListener('click', () => { calSpeed = +b.dataset.cal; syncSeg(); setCalPlaying(true); }));
+  syncSeg(); setCalPlaying(calPlaying);
+  document.getElementById('calStrip').hidden = !S.cal;
+  lastDayInt = -1;
+}
+
+// ---------- loop ----------
+let last = performance.now(), acc = 0;
+function frame(now, still){
+  calStep(still ? 0 : Math.min(64, now - last));
+  if (!still){
+    const dt = Math.min(64, now - last); last = now;
+    if (layerChat.checked){ acc += dt/1000 * +rateIn.value; while (acc >= 1){ acc -= 1; if (S.feed === 'live' && !LIVE.failed) continue; if (layerLeaders.checked && Math.random() < .25) spawnLeaderPost(); else spawnPost(now); } }
+    if (activeEvent && now > eventUntil){ activeEvent = null; eventBadge.hidden = true; }
+    C.forEach(c => c.buzzGlow *= .992);
+    ALLKEYS.forEach(k => ANCHOR_T[k].buzzGlow *= .99);
+    stepArt(now);
+  }
+  drawUI();
+}
+function loop(now){ if (!running) return; frame(now); requestAnimationFrame(loop); }
+function warm(n){ let t = performance.now(); for (let i=0;i<n;i++){ t += 16; last = t - 16; frame(t); } }
+
+buildCalTable(); recomputeActive(); applyPalette(); layout(); renderTerms(); renderDetail(); buildBoard(); buildCalUI();
+// seed the feed so the page opens in a working state
+initLive();
+if (S.feed !== 'live'){ for (let i=0;i<5;i++) spawnPost(performance.now()); for (let i=0;i<2;i++) spawnLeaderPost(); }
+warm(90);
+if (reduceMotion){ running = false; playBtn.textContent = 'Play'; }
+else requestAnimationFrame(t => { last = t; loop(t); });
+})();
+</script>
+</body>
+</html>
